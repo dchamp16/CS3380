@@ -1,4 +1,3 @@
-const fs = require("fs");
 /*
 stack:
 depthfirst{
@@ -27,25 +26,30 @@ D               E
 // console.log(root.json((data) => data));
 
 async function preOrder(path) {
+  const fs = require("fs");
   // parent
-  console.log(`${path}/`); // TODO: get info about file or directory
-  // TODO: get list of children
-  const children = await fs.readdirSync(path);
+  const dirEntries = await fs.readdirSync(path, { withFileTypes: true });
   // children
-  for (let child of children) {
-    const stats = await fs.statSync(child);
-
-    // const dirEntry = {
-    //   name: child,
-    //   size: stats.size,
-    // };
-    // console.log(dirEntry);
-
-    console.log(child);
-    console.log(stats);
+  for (let dirEntry of dirEntries) {
+    const stats = await fs.statSync(dirEntry);
+    if (dirEntry.isDirectory()) {
+      let dir = {
+        name: `${dirEntry.name}/`,
+        size: 0,
+      };
+      console.log(dir);
+    } else if (dirEntry.isFile()) {
+      let size = await fs.statSync(`${path}${dirEntry.name}`);
+      let file = {
+        name: `${dirEntry.name}/`,
+        size: size,
+      };
+      console.log(file);
+    }
   }
 }
 preOrder(".");
+console.log(`./`);
 
 //ELEPHANT CODE GRAVEYARD
 // function breadthFirst(cur) {

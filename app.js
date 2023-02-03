@@ -4,10 +4,11 @@ async function preOrder(directory) {
 
   // returns the directories files using stat
   const children2 = await fs.readdirSync("test");
-  console.log(children2);
-  children2.forEach((data) => {
+  // console.log(children2);
+  await children2.forEach((data) => {
     const stat = fs.stat(`test/${data}`, (err, stats) => {
       console.log(data);
+      // console.log(fs.isDirectory(data));
       console.log(stats);
     });
   });
