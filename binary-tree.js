@@ -25,21 +25,24 @@ D               E
 // console.log(JSON.stringify(root, null, 2));
 // console.log(root.json((data) => data));
 
-async function preOrder(path) {
+async function postOrder(path) {
   const fs = require("fs");
   // parent
   const dirEntries = await fs.readdirSync(path, { withFileTypes: true });
+  console.log(dirEntries);
+  return;
   // children
   for (let dirEntry of dirEntries) {
-    const stats = await fs.statSync(dirEntry);
     if (dirEntry.isDirectory()) {
       let dir = {
         name: `${dirEntry.name}/`,
-        size: 0,
+        size: 0, //TODO
+        children: [], //TODO
       };
       console.log(dir);
+      postOrder(`${path}${dir.name}`);
     } else if (dirEntry.isFile()) {
-      let size = await fs.statSync(`${path}${dirEntry.name}`);
+      let size = await fs.statSync(`${path}${dirEntry.name}`).size;
       let file = {
         name: `${dirEntry.name}/`,
         size: size,
@@ -48,8 +51,8 @@ async function preOrder(path) {
     }
   }
 }
-preOrder(".");
-console.log(`./`);
+postOrder("/");
+// console.log(`./`);
 
 //ELEPHANT CODE GRAVEYARD
 // function breadthFirst(cur) {

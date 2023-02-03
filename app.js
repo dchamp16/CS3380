@@ -2,20 +2,16 @@ async function preOrder(directory) {
   const fs = require("fs");
   const path = require("path");
 
-  // returns the directories files using stat
-  const children2 = await fs.readdirSync("test");
-  // console.log(children2);
-  await children2.forEach((data) => {
-    const stat = fs.stat(`test/${data}`, (err, stats) => {
-      console.log(data);
-      // console.log(fs.isDirectory(data));
-      console.log(stats);
-    });
-  });
+  const children2 = await fs.readdirSync(directory);
+  console.log(children2);
+  // await children2.forEach((data) => {
+  //   const stat = fs.stat(`test/${data}`, (err, stats) => {
+  //     console.log(data);
+  //     console.log(stats);
+  //   });
+  // });
 
   return;
-
-  // TODO: get the content of the folder and size
   try {
     console.log(`/${directory}/`);
     const children = await fs.readdirSync(directory);
