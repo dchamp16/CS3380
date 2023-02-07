@@ -26,7 +26,10 @@ D               E
 // console.log(root.json((data) => data));
 
 async function postOrder(path) {
+  const filesize = require("filesize");
   const fs = require("fs");
+  console.log(filesize.filesize(265318, { base: 2, standard: "jedec" }));
+  return;
   // parent
   const dirEntries = await fs.readdirSync(path, { withFileTypes: true });
   console.log(dirEntries);
