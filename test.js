@@ -5,13 +5,13 @@ async function checkFile() {
   let rootFolder = fs.readdirSync(".");
   let arrayFile = [];
 
-  for (let i = 0; i < rootFolder.length; i++) {
-    await fs.stat(rootFolder[i], (error, stats) => {
+  for (let [key, value] of rootFolder.entries()) {
+    await fs.stat(rootFolder[key], (error, stats) => {
       if (error) {
         console.log(error.message);
       } else {
         arrayFile.push({
-          name: rootFolder[i],
+          name: rootFolder[key],
           sizeNum: stats.size,
           sizeStr: filesize.filesize(stats.size),
         });
