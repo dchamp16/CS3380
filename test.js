@@ -1,8 +1,8 @@
-async function checkFile() {
+async function checkFile(path) {
   const fs = require("fs");
   const filesize = require("filesize");
 
-  let rootFolder = fs.readdirSync(".");
+  let rootFolder = fs.readdirSync(path);
   let arrayFile = [];
 
   for (let [key, value] of rootFolder.entries()) {
@@ -24,7 +24,7 @@ async function checkFile() {
   }, 100);
 }
 
-checkFile();
+checkFile(".");
 
 /* clear the console in 10 second */
 setTimeout(() => {

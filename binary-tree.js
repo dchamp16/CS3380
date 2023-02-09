@@ -31,8 +31,6 @@ async function postOrder(path) {
 
   // parent
   const dirEntries = await fs.readdirSync(path, { withFileTypes: true });
-  console.log(dirEntries);
-  return;
   // children
   for (let dirEntry of dirEntries) {
     if (dirEntry.isDirectory()) {
