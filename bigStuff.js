@@ -5,22 +5,27 @@ async function checkFile(path) {
   let rootFolder = fs.readdirSync(path);
   let arrayFile = [];
 
-  for (let [key, value] of rootFolder.entries()) {
-    await fs.stat(rootFolder[key], (error, stats) => {
-      if (error) {
-        console.log(error.message);
-      } else {
-        arrayFile.push({
-          name: rootFolder[key],
-          sizeNum: stats.size,
-          sizeStr: filesize.filesize(stats.size),
-          isFile: stats.isFile(),
-          isDirectory: stats.isDirectory(),
-        });
-      }
-      arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
-    });
+  try {
+    for (let [key, value] of rootFolder.entries()) {
+      await fs.stat(rootFolder[key], (error, stats) => {
+        if (error) {
+          console.log(error.message);
+        } else {
+          arrayFile.push({
+            name: rootFolder[key],
+            sizeNum: stats.size,
+            sizeStr: filesize.filesize(stats.size),
+            isFile: stats.isFile(),
+            isDirectory: stats.isDirectory(),
+          });
+        }
+        arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
   }
+
   await setTimeout(() => {
     console.log(arrayFile);
   }, 100);
