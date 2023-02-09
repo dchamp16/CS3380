@@ -1,6 +1,7 @@
 async function preOrder(directory) {
   const fs = require("fs");
   const path = require("path");
+  let threshold = 0;
 
   const children2 = await fs.readdirSync(directory);
   console.log(children2);
