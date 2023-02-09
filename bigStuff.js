@@ -14,6 +14,8 @@ async function checkFile(path) {
           name: rootFolder[key],
           sizeNum: stats.size,
           sizeStr: filesize.filesize(stats.size),
+          isFile: stats.isFile(),
+          isDirectory: stats.isDirectory(),
         });
       }
       arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
