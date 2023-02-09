@@ -19,4 +19,4 @@ let dogs = [
 // dogs.sort((a, b) => a.age - b.age); //sort age
 dogs.sort((a, b) => a.name.localeCompare(b.name));
 
-console.log(dogs);
+console.table(dogs);
