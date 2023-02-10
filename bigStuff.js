@@ -1,11 +1,6 @@
 // calculating block (size / 4096)
 // use / so it works for everything
 
-//TODO commas seperate file
-// 2320000 2,320,000
-// 394000000003 394,000,000,003
-// 4096
-
 //TODO seperate file give the extension
 //readme.txt txt
 //.gitignore gitignore
@@ -26,14 +21,17 @@ async function checkFile(path) {
         if (error) {
           console.log(error.message);
         } else {
-          arrayFile.push({
-            name: rootFolder[key],
-            sizeNum: stats.size,
-            sizeStr: filesize.filesize(stats.size),
-            isFile: stats.isFile(),
-            isDirectory: stats.isDirectory(),
-            blocks: Math.ceil(stats.size / 4096),
-          });
+          //TODO check if its file or directory
+          if (stats.isFile) {
+            arrayFile.push({
+              name: rootFolder[key],
+              sizeNum: stats.size,
+              sizeStr: filesize.filesize(stats.size),
+              isFile: stats.isFile(),
+              isDirectory: stats.isDirectory(),
+              blocks: Math.ceil(stats.size / 4096),
+            });
+          }
         }
         arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
       });
