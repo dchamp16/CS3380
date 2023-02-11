@@ -11,27 +11,29 @@ async function checkFile(path) {
   const fs = require("fs");
   const filesize = require("filesize");
 
-  let rootFolder = fs.readdirSync(path);
+  let filesFolders = fs.readdirSync(path);
   let arrayFile = [];
 
   try {
-    for (let [key, value] of rootFolder.entries()) {
-      await fs.stat(rootFolder[key], (error, stats) => {
-        console.log(stats);
+    for (let value of filesFolders) {
+      await fs.stat(value, (error, stats) => {
+        // console.log(stats); // console the stat information
         if (error) {
           console.log(error.message);
         } else {
-          //TODO check if its file or directory
-          if (stats.isFile) {
+          //checks if it a file
+          if (stats.isFile()) {
             arrayFile.push({
-              name: rootFolder[key],
+              name: value,
               sizeNum: stats.size,
               sizeStr: filesize.filesize(stats.size),
               isFile: stats.isFile(),
               isDirectory: stats.isDirectory(),
               blocks: Math.ceil(stats.size / 4096),
+              files: {},
             });
           }
+          //checks if its directory
         }
         arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
       });
@@ -40,7 +42,7 @@ async function checkFile(path) {
     console.log(error.message);
   }
   await setTimeout(() => {
-    // console.log(arrayFile);
+    console.log(arrayFile);
   }, 100);
 }
 
@@ -49,7 +51,7 @@ checkFile(".");
 /* clear the console in 10 second */
 setTimeout(() => {
   console.clear();
-}, 10_000);
+}, 15_000);
 
 function usage() {
   //TODO print the help screen
