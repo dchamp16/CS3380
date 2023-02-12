@@ -34,25 +34,42 @@ example: false
         } else {
           //checks if it a file
           if (stats.isDirectory() && !regexExtensionName.test(value)) {
-            console.log("directory", value);
-            // arrayFile.push({
-            //   name: value,
-            //   sizeNum: stats.size,
-            //   sizeStr: filesize.filesize(stats.size),
-            //   isDirectory: stats.isDirectory(),
-            //   blocks: Math.ceil(stats.size / 4096),
-            //   files: [],
-            // });
+            fs.stat(value + "/", (error, folder) => {
+              arrayFile.push({
+                name: value,
+                sizeNum: folder.size,
+                sizeStr: filesize.filesize(stats.size),
+                isDirectory: folder.isDirectory(),
+                blocks: Math.ceil(stats.size / 4096),
+                files: [],
+              });
+            });
+            //checkk if its a file
           } else {
-            console.log("files", value);
-            // arrayFile[0]["files"] = {
-            //   name: value,
-            //   sizeNum: stats.size,
-            //   sizeStr: filesize.filesize(stats.size),
-            //   isFile: stats.isFile(),
-            //   blocks: Math.ceil(stats.size / 4096),
-            // };
+            arrayFile.push({
+              name: value,
+              sizeNum: stats.size,
+              sizeStr: filesize.filesize(stats.size),
+              isFile: stats.isFile(),
+              blocks: Math.ceil(stats.size / 4096),
+            });
           }
+        }
+        const fs.readdirSync()
+
+
+        for (let directory of directories) {
+          fs.stat(`${__dirname}/${value}/${directory}`, (error, subFile) => {
+            // console.log(subFile);
+            console.log(arrayFile);
+            // arrayFile[0].files.push({
+            //   name: directory,
+            //   sizeNum: subFile.size,
+            //   sizeStr: filesize.filesize(subFile.size),
+            //   isDirectory: subFile.isDirectory(),
+            //   blocks: Math.ceil(stats.size / 4096),
+            // });
+          });
         }
         arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
       });
@@ -61,7 +78,7 @@ example: false
     console.log(error.message);
   }
   await setTimeout(() => {
-    console.log(arrayFile);
+    // console.log(arrayFile);
   }, 100);
 }
 

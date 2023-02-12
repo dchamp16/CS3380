@@ -1,13 +1,16 @@
-let fs = require("fs");
+const fs = require("fs");
 
-let filesAndFolders = fs.readdirSync(".");
+let filesAndFolders = fs.readdirSync(`remove_this/`);
 
-for (let fileAndFolder of filesAndFolders) {
-  fs.stat(fileAndFolder, (error, stats) => {
-    if (error) throw error;
-    if (stats.isDirectory()) {
-      console.log(fileAndFolder, stats);
-    } else if (stats.isFile()) {
+console.log(filesAndFolders);
+// let roots = fs.readdirSync(".");
+
+for (let root of filesAndFolders) {
+  fs.stat(root, (error, stats) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(root, stats);
     }
   });
 }
