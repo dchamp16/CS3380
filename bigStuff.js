@@ -12,28 +12,47 @@ async function checkFile(path) {
   const filesize = require("filesize");
 
   let filesFolders = fs.readdirSync(path);
-  let arrayFile = [];
+  let arrayFile = [{}];
+  /*
+regex check string if it has extension name
+example: true
+  example.txt
+  doc.exe
+  .gitignore
+example: false
+  document
+  peterFiles
+  mycomputer
+  */
+  const regexExtensionName = new RegExp(/[\.][\w]+/);
 
   try {
     for (let value of filesFolders) {
       await fs.stat(value, (error, stats) => {
-        // console.log(stats); // console the stat information
         if (error) {
           console.log(error.message);
         } else {
           //checks if it a file
-          if (stats.isFile()) {
-            arrayFile.push({
-              name: value,
-              sizeNum: stats.size,
-              sizeStr: filesize.filesize(stats.size),
-              isFile: stats.isFile(),
-              isDirectory: stats.isDirectory(),
-              blocks: Math.ceil(stats.size / 4096),
-              files: {},
-            });
+          if (stats.isDirectory() && !regexExtensionName.test(value)) {
+            console.log("directory", value);
+            // arrayFile.push({
+            //   name: value,
+            //   sizeNum: stats.size,
+            //   sizeStr: filesize.filesize(stats.size),
+            //   isDirectory: stats.isDirectory(),
+            //   blocks: Math.ceil(stats.size / 4096),
+            //   files: [],
+            // });
+          } else {
+            console.log("files", value);
+            // arrayFile[0]["files"] = {
+            //   name: value,
+            //   sizeNum: stats.size,
+            //   sizeStr: filesize.filesize(stats.size),
+            //   isFile: stats.isFile(),
+            //   blocks: Math.ceil(stats.size / 4096),
+            // };
           }
-          //checks if its directory
         }
         arrayFile.sort((a, b) => a.sizeNum - b.sizeNum);
       });
