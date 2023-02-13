@@ -84,9 +84,14 @@ let obj2 = [
 
 function compare(obj1, obj2) {
   for (let one in obj1) {
+    // console.log("first loop:", typeof one);
+    console.log(Object.hasOwn(obj1[one], "files"));
     for (let two in obj2) {
-      if (obj1[one].name === obj2[two].directoryName) {
-        return (obj1[one].files = obj2);
+      if (
+        obj1[one].name === obj1[two].directoryName &&
+        Object.hasOwn(obj1[one], "files")
+      ) {
+        one.files = obj2;
       }
     }
   }
