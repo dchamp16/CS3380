@@ -1,3 +1,6 @@
+const util = require("util");
+const _ = require("lodash");
+
 async function checkFile(path) {
   const fs = require("fs");
   const filesize = require("filesize");
@@ -88,12 +91,14 @@ example: false
     console.log(error.message);
   }
 
-  //compare 2 object if both
+  //compare() check if obj1 has key "files" then check if obj1 and obj2 subfile === then push all subfile to obj1 files
   function compare(obj1, obj2) {
-    for (let first in obj1) {
-      for (let second in obj2) {
-        if (obj1[first].name === obj2[second].directoryName) {
-          return (obj1[first].files = obj2);
+    for (let directory in obj1) {
+      for (let subFile in obj2) {
+        if (Object.hasOwn(obj1[directory], "files")) {
+          if (obj1[directory].name === obj2[subFile].directoryName) {
+            obj1[directory].files.push(obj2[subFile]);
+          }
         }
       }
     }
@@ -101,8 +106,13 @@ example: false
 
   await setTimeout(() => {
     compare(arrayFiles, temArr);
-    console.log(arrayFiles);
-  }, 2000);
+    //sorted decending order
+    let sorted = _.sortBy(arrayFiles, "sizeNum").reverse();
+
+    console.log(util.inspect(sorted, { showHidden: false, depth: null }));
+
+    // console.log(arrayFiles);
+  }, 1000);
 }
 
 checkFile(".");

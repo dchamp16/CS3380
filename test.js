@@ -83,10 +83,12 @@ let obj2 = [
 ];
 
 function compare(obj1, obj2) {
-  for (let one in obj1) {
-    for (let two in obj2) {
-      if (obj1[one].name === obj2[two].directoryName) {
-        return (obj1[one].files = obj2);
+  for (let first in obj1) {
+    for (let second in obj2) {
+      if (Object.hasOwn(obj1[first], "files")) {
+        if (obj1[first].name === obj2[second].directoryName) {
+          obj1[first].files.push(obj2[second]);
+        }
       }
     }
   }
