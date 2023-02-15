@@ -1,5 +1,11 @@
 const util = require("util");
 const _ = require("lodash");
+const getHelpText = require("./getHelpText");
+
+// get helptext
+console.log(getHelpText());
+
+// -------------------
 
 async function checkFile(path) {
   const fs = require("fs");
@@ -109,7 +115,7 @@ example: false
     //sorted decending order
     let sorted = _.sortBy(arrayFiles, "sizeNum").reverse();
 
-    console.log(util.inspect(sorted, { showHidden: false, depth: null }));
+    // console.log(util.inspect(sorted, { showHidden: false, depth: null }));
 
     // console.log(arrayFiles);
   }, 1000);
