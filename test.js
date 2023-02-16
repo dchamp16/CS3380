@@ -1,107 +1,15 @@
-let obj1 = [
-  {
-    name: "node_modules",
-    sizeNum: 128,
-    sizeStr: "128 B",
-    isFile: false,
-    blocks: 1,
-    files: []
-  },
-  {
-    name: "remove_this",
-    sizeNum: 128,
-    sizeStr: "128 B",
-    isFile: false,
-    blocks: 1,
-    files: []
-  },
-  {
-    name: "test",
-    sizeNum: 128,
-    sizeStr: "128 B",
-    isFile: false,
-    blocks: 1,
-    files: []
-  },
-  {
-    name: ".git",
-    sizeNum: 512,
-    sizeStr: "512 B",
-    isDirectory: true,
-    blocks: 1
-  },
-  {
-    name: "bigStuff.js",
-    sizeNum: 3174,
-    sizeStr: "3.17 kB",
-    isDirectory: false,
-    blocks: 1
-  }
-];
+let userInput = process.argv.slice(2);
+const getHelpText = require("./getHelpText");
 
-let obj2 = [
-  {
-    name: "filesize",
-    directoryName: "node_modules",
-    sizeNum: 224,
-    sizeStr: "224 B",
-    isFile: false,
-    blocks: 1
-  },
-  {
-    name: ".package-lock.json",
-    directoryName: "node_modules",
-    sizeNum: 409,
-    sizeStr: "409 B",
-    isFile: true,
-    blocks: 1
-  },
-  {
-    name: "League Website.pptx",
-    directoryName: "remove_this",
-    sizeNum: 20292884,
-    sizeStr: "20.29 MB",
-    isFile: true,
-    blocks: 4955
-  },
-  {
-    name: "json.txt",
-    directoryName: "remove_this",
-    sizeNum: 16120,
-    sizeStr: "16.12 kB",
-    isFile: true,
-    blocks: 4
-  },
-  {
-    name: "blah.json",
-    directoryName: "test",
-    sizeNum: 158,
-    sizeStr: "158 B",
-    isFile: true,
-    blocks: 1
-  }
-];
-
-function compare(obj1, obj2) {
-<<<<<<< HEAD
-  for (let first in obj1) {
-    for (let second in obj2) {
-      if (Object.hasOwn(obj1[first], "files")) {
-        if (obj1[first].name === obj2[second].directoryName) {
-          obj1[first].files.push(obj2[second]);
-        }
-      }
-=======
-  console.log("start ------------------");
-  for (let one in obj1) {
-    if (obj1[one].name === obj2[one].directoryName) {
-      obj1[one].files[one] = obj2[one]
->>>>>>> 6ed6fc60c18c93702a43904c0c11b0acc5d065e7
-    }
-  }
-  console.log("end ------------------");
+switch (userInput[0]) {
+  case "peter":
+  case "Peter":
+    console.log(getHelpText());
+    break;
+  case "lauren":
+  case "Lauren":
+    console.log("lauren", true);
+    break;
+  default:
+    console.log("wrong input");
 }
-
-compare(obj1, obj2);
-console.log(obj1);
-
