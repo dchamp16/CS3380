@@ -172,7 +172,4 @@ example: false
 //   console.clear();
 // }, 15_000);
 
-function usage() {
-  //TODO print the help screen
-  process.exit(0);
-}
+//TODO printTree function

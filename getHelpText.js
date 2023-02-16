@@ -5,3 +5,7 @@ function getHelp() {
 }
 
 module.exports = getHelp;
+function usage() {
+  //TODO print the help screen
+  process.exit(0);
+}

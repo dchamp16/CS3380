@@ -24,34 +24,45 @@ D               E
 // let root = A;
 // console.log(JSON.stringify(root, null, 2));
 // console.log(root.json((data) => data));
+const filesize = require("filesize");
+const fs = require("fs");
 
-async function postOrder(path) {
-  const filesize = require("filesize");
-  const fs = require("fs");
-
-  // parent
-  const dirEntries = await fs.readdirSync(path, { withFileTypes: true });
-  // children
-  for (let dirEntry of dirEntries) {
-    if (dirEntry.isDirectory()) {
-      let dir = {
-        name: `${dirEntry.name}/`,
+async function postOrder(dirPath) {
+  const names = fs.readdirSync(dirPath);
+  for (let name of names) {
+    const stat = fs.statSync(`${dirPath}/${name}`);
+    console.log(stat);
+    if (stat.isDirectory()) {
+      let parentDir = {
+        name: stat.name,
         size: 0, //TODO
-        children: [], //TODO
+        children: [], //TODO pass the children
       };
-      console.log(dir);
-      postOrder(`${path}${dir.name}`);
-    } else if (dirEntry.isFile()) {
-      let size = await fs.statSync(`${path}${dirEntry.name}`).size;
+      let subDir = postOrder(`${dirPath}/${name}`);
+      parentDir.children.push(subDir);
+    } else if (stat.isFile()) {
+      let size = stat.size;
       let file = {
-        name: `${dirEntry.name}/`,
+        name: `${name}`,
         size: size,
       };
       console.log(file);
     }
   }
 }
-postOrder("./");
+postOrder(".");
+
+function printTree(tree) {
+  console.log("printTree() TODO");
+  console.group();
+  console.groupEnd();
+}
+
+function main() {
+  const tree = postOrder(".");
+}
+
+// main();
 // console.log(`./`);
 
 //ELEPHANT CODE GRAVEYARD
