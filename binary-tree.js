@@ -29,14 +29,17 @@ const fs = require("fs");
 
 async function postOrder(dirPath) {
   const names = fs.readdirSync(dirPath);
+  const dir = [];
   for (let name of names) {
     const stat = fs.statSync(`${dirPath}/${name}`);
+    console.log(name);
     if (stat.isDirectory()) {
       let parentDir = {
         name: name,
         size: 0, //TODO
         children: [], //TODO pass the children
       };
+      dir.push(parentDir);
       postOrder(`${dirPath}/${name}`);
     } else if (stat.isFile()) {
       let size = stat.size;
@@ -44,8 +47,10 @@ async function postOrder(dirPath) {
         name: `${name}`,
         size: size,
       };
+      // dir.
     }
   }
+  console.log(dir);
 }
 postOrder("./remove_this");
 
