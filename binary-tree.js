@@ -31,26 +31,23 @@ async function postOrder(dirPath) {
   const names = fs.readdirSync(dirPath);
   for (let name of names) {
     const stat = fs.statSync(`${dirPath}/${name}`);
-    console.log(stat);
     if (stat.isDirectory()) {
       let parentDir = {
-        name: stat.name,
+        name: name,
         size: 0, //TODO
         children: [], //TODO pass the children
       };
-      let subDir = postOrder(`${dirPath}/${name}`);
-      parentDir.children.push(subDir);
+      postOrder(`${dirPath}/${name}`);
     } else if (stat.isFile()) {
       let size = stat.size;
       let file = {
         name: `${name}`,
         size: size,
       };
-      console.log(file);
     }
   }
 }
-postOrder(".");
+postOrder("./remove_this");
 
 function printTree(tree) {
   console.log("printTree() TODO");
