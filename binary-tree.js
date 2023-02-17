@@ -26,45 +26,72 @@ D               E
 // console.log(root.json((data) => data));
 const filesize = require("filesize");
 const fs = require("fs");
+const util = require("util");
 
-async function postOrder(dirPath) {
+let path = ".";
+let threshold = 1;
+
+function usage() {
+  process.exit(0);
+}
+
+function setGlobalFlags() {
+  console.log("setGlobalFlags()");
+}
+
+function walkDirTree(dirPath) {
+  const dirName = dirPath.split("/").pop();
+  dirPath += "/";
+  let parentDir = {
+    name: dirName,
+    size: 0, //TODO as each child is process and its size to this
+    children: [],
+  };
   const names = fs.readdirSync(dirPath);
-  const dir = [];
   for (let name of names) {
-    const stat = fs.statSync(`${dirPath}/${name}`);
-    console.log(name);
+    const stat = fs.statSync(`${dirPath}${name}`);
     if (stat.isDirectory()) {
-      let parentDir = {
-        name: name,
-        size: 0, //TODO
-        children: [], //TODO pass the children
-      };
-      dir.push(parentDir);
-      postOrder(`${dirPath}/${name}`);
+      // console.log(dir);
+      let subdir = walkDirTree(`${dirPath}${name}`);
+      parentDir.children.push(subdir);
     } else if (stat.isFile()) {
       let size = stat.size;
-      let file = {
-        name: `${name}`,
-        size: size,
-      };
-      // dir.
+      let file = { name, size };
+      parentDir.children.push(file);
     }
   }
-  console.log(dir);
+  //maybe sort here
+  return parentDir;
 }
-postOrder("./remove_this");
 
-function printTree(tree) {
+walkDirTree("remove_this");
+
+function printTree(parent) {
   console.log("printTree() TODO");
+  // TODO walk your tree datastructure preoder
+  //print parent info
   console.group();
+  for (let child of parent.children) {
+    //for every child od parent
+    if (child.children) {
+    }
+    //print childs info
+    //if child is directory
+    //printTree(child)
+    // else child is file
+    // print file info
+  }
   console.groupEnd();
 }
 
 function main() {
-  const tree = postOrder(".");
+  setGlobalFlags();
+  const tree = walkDirTree("remove_this");
+  console.log(JSON.stringify(tree, null, 2));
+  printTree(tree);
 }
 
-// main();
+main();
 // console.log(`./`);
 
 //ELEPHANT CODE GRAVEYARD
