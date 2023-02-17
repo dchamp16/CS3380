@@ -28,7 +28,7 @@ const filesize = require("filesize");
 const fs = require("fs");
 const util = require("util");
 
-let path = ".";
+// let path = ".";
 let threshold = 1;
 
 let userInput = process.argv.slice(2);
@@ -39,7 +39,7 @@ switch (userInput[0]) {
   case "--p":
   case "--P":
     console.log("userinput:", userInput[1]);
-    checkFile(userInput[1]);
+    walkDirTree(userInput[1]);
     break;
   case "-s":
   case "-S":
@@ -70,16 +70,18 @@ switch (userInput[0]) {
   case "--h":
   case "--H":
     // TODO displays the actual storage sizes on disk. default is not blocksize
+    console.log("userInput[0] peter");
+    console.log(usage());
     break;
   default:
-    usage();
     break;
 }
 
 // ---------------
 
 function usage() {
-  process.exit(0);
+  return fs.readFileSync("./help.txt", "utf-8");
+  // process.exit(0);
 }
 
 function setGlobalFlags() {
@@ -111,7 +113,7 @@ function walkDirTree(dirPath) {
   return parentDir;
 }
 
-walkDirTree("remove_this");
+// walkDirTree(userInput[2]);
 
 function printTree(parent) {
   console.log("printTree() TODO");
@@ -138,7 +140,7 @@ function main() {
   printTree(tree);
 }
 
-main();
+// main();
 // console.log(`./`);
 
 //ELEPHANT CODE GRAVEYARD
