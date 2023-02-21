@@ -94,6 +94,7 @@ function walkDirTree(dirPath) {
       let file = {
         name,
         size,
+        commaSize: size.toLocaleString(),
         filesizeString: "",
         isFile: stat.isFile(),
         ext: path.extname(name).slice(1),
@@ -110,16 +111,16 @@ function walkDirTree(dirPath) {
 
   return parentDir;
 }
-
+// walkDirTree("remove_This");
 function printTree(parent) {
   const tree = walkDirTree(parent);
 
   if (!tree.isFile) {
-    console.log(tree.name, tree.filesizeString);
+    console.log(tree.name, tree.commaSize);
     for (let children of tree.children) {
       if (children.isFile) {
         console.group();
-        console.log(children.name, children.filesizeString);
+        console.log(children.name, children.commaSize);
         console.groupEnd();
       } else {
         console.group();
@@ -129,7 +130,7 @@ function printTree(parent) {
     }
   }
 }
-// printTree("remove_this");
+printTree("remove_this");
 
 function sizeSort(parent, sortKind) {
   const tree = walkDirTree(parent);
