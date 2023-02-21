@@ -1,3 +1,3 @@
 const numberComma = (num) => new Intl.NumberFormat("en-US").format(num);
 
-export { numberComma };
+console.log(numberComma(41234132412));

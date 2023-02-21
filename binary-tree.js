@@ -140,7 +140,7 @@ function main() {
   printTree(tree);
 }
 
-// main();
+main();
 // console.log(`./`);
 
 //ELEPHANT CODE GRAVEYARD

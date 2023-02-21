@@ -1,30 +1,49 @@
+const filesize = require("filesize");
+const fs = require("fs");
 const util = require("util");
 const _ = require("lodash");
-const getHelpText = require("./getHelpText");
+const path = require("path");
+const numberComma = (num) => new Intl.NumberFormat("en-US").format(num);
 
-// ------------------- user input
+// let path = ".";
+let threshold = 1;
 
 let userInput = process.argv.slice(2);
+const command = userInput[0];
+const fileName = userInput[1];
+const sortCommand = userInput[2];
 
-switch (userInput[0]) {
+switch (command) {
   case "-p":
   case "-P":
   case "--p":
   case "--P":
-    console.log("userinput:", userInput[1]);
-    checkFile(userInput[1]);
+    printTree(fileName);
     break;
   case "-s":
   case "-S":
   case "--s":
   case "--S":
-    //TODO sort alpha, extension, size
+    switch (sortCommand) {
+      case "alpha":
+        nameSort(fileName);
+        break;
+      case "exten":
+        extSort(fileName);
+        break;
+      case "size":
+        sizeSort(fileName);
+        break;
+      default:
+        printTree(fileName);
+        break;
+    }
     break;
   case "-m":
   case "-M":
   case "--m":
   case "--M":
-    //TODO size display KB,MB,GB TB instead of bytes
+    printTree(fileName);
     break;
   case "-t":
   case "-T":
@@ -36,140 +55,177 @@ switch (userInput[0]) {
   case "-B":
   case "--b":
   case "--B":
-    // TODO displays the actual storage sizes on disk. default is not blocksize
+    printBlock(fileName);
     break;
   case "-h":
   case "-H":
   case "--h":
   case "--H":
-    // TODO displays the actual storage sizes on disk. default is not blocksize
+    console.log(usage());
     break;
   default:
-    usage();
     break;
 }
 
 // ---------------
 
-async function checkFile(path) {
-  const fs = require("fs");
-  const filesize = require("filesize");
+function usage() {
+  return fs.readFileSync("./help.txt", "utf-8");
+  // process.exit(0);
+}
 
-  let filesFolders = fs.readdirSync(path);
-  let arrayFiles = [];
-  let temArr;
-  /*
-regex check string if it has extension name
-example: true
-  example.txt
-  doc.exe
-  .gitignore
-example: false
-  document
-  peterFiles
-  mycomputer
-  */
-  const regexExtensionName = new RegExp(/[\.][\w]+/);
+// function setGlobalFlags() {
+//   console.log("setGlobalFlags()");
+// }
 
-  try {
-    for (let value of filesFolders) {
-      await fs.stat(value, (error, stats) => {
-        if (error) {
-          console.log(error.message);
-        } else {
-          //checks if it a file
-          if (stats.isFile && regexExtensionName.test(value)) {
-            // console.log("file:", value);
-            /* end test */
-            fs.stat(value, (error, folder) => {
-              arrayFiles.push({
-                name: value,
-                sizeNum: folder.size,
-                sizeStr: filesize.filesize(stats.size),
-                isDirectory: folder.isDirectory(),
-                blocks: Math.ceil(stats.size / 4096),
-              });
-            });
-            //checkk if its a file
-          } else if (stats.isDirectory && !regexExtensionName.test(value)) {
-            // console.log("direcory:", value);
-            /* end test */
-            arrayFiles.push({
-              name: value,
-              sizeNum: stats.size,
-              sizeStr: filesize.filesize(stats.size),
-              isFile: stats.isFile(),
-              blocks: Math.ceil(stats.size / 4096),
-              files: [],
-            });
-
-            // console.log(folderFiles);
-          }
-        }
-        arrayFiles.sort((a, b) => a.sizeNum - b.sizeNum);
-      });
+function walkDirTree(dirPath) {
+  // const dirName = dirPath.split("/").pop();
+  dirPath += "/";
+  let parentDir = {
+    name: dirPath,
+    size: 0,
+    filesizeString: "",
+    isFile: false,
+    children: [],
+  };
+  const names = fs.readdirSync(dirPath);
+  for (let name of names) {
+    const stat = fs.statSync(`${dirPath}${name}`);
+    if (stat.isDirectory()) {
+      let subdir = walkDirTree(`${dirPath}${name}`);
+      parentDir.children.push(subdir);
+    } else if (stat.isFile()) {
+      let size = stat.size;
+      let file = {
+        name,
+        size,
+        filesizeString: "",
+        isFile: stat.isFile(),
+        ext: path.extname(name).slice(1),
+        block: Math.ceil(size / 4096),
+      };
+      parentDir.children.push(file);
+      // parentDir.children[name].isFile = stat.isDirectory();
     }
-
-    let folders = fs.readdirSync(`.`);
-    temArr = []; //TODO: change name
-    for (let file of folders) {
-      fs.stat(file, (error, subfile) => {
-        if (subfile.isDirectory() && !regexExtensionName.test(subfile)) {
-          let files = `${__dirname}/${file}`;
-          let foldersWithFile = fs.readdirSync(files);
-          foldersWithFile.forEach((data) => {
-            // console.log(file);
-            // if() //check if the extension same
-            fs.stat(`${files}/${data}`, (err, fileStat) => {
-              temArr.push({
-                name: data,
-                directoryName: file,
-                sizeNum: fileStat.size,
-                sizeStr: filesize.filesize(fileStat.size),
-                isFile: fileStat.isFile(),
-                blocks: Math.ceil(fileStat.size / 4096),
-              });
-            });
-          });
-        }
-      });
-    }
-    setTimeout(() => {
-      // console.log(temArr);
-    }, 100);
-  } catch (error) {
-    console.log(error.message);
   }
+  parentDir.children.forEach((sizes, index) => {
+    parentDir.size += sizes.size;
+    parentDir.children[index].filesizeString = filesize.filesize(sizes.size);
+  });
+  parentDir.filesizeString = filesize.filesize(parentDir.size);
 
-  //compare() check if obj1 has key "files" then check if obj1 and obj2 subfile === then push all subfile to obj1 files
-  function compare(obj1, obj2) {
-    for (let directory in obj1) {
-      for (let subFile in obj2) {
-        if (Object.hasOwn(obj1[directory], "files")) {
-          if (obj1[directory].name === obj2[subFile].directoryName) {
-            obj1[directory].files.push(obj2[subFile]);
-          }
-        }
+  return parentDir;
+}
+
+function printTree(parent) {
+  const tree = walkDirTree(parent);
+
+  if (!tree.isFile) {
+    console.log(tree.name, tree.filesizeString);
+    for (let children of tree.children) {
+      if (children.isFile) {
+        console.group(); // seperation
+        console.log(children.name, children.filesizeString); // printout name and size
+        console.groupEnd(); // end of seperation
+      } else {
+        console.group();
+        printTree(children.name);
+        console.groupEnd();
       }
     }
   }
+}
+// printTree("remove_this");
 
-  await setTimeout(() => {
-    compare(arrayFiles, temArr);
-    //sorted decending order
-    let sorted = _.sortBy(arrayFiles, "sizeNum").reverse();
+function sizeSort(parent, sortKind) {
+  const tree = walkDirTree(parent);
+  let childrenSortSize = _.sortBy(tree.children, [
+    function (o) {
+      return o.size;
+    },
+  ]).reverse();
 
-    console.log(util.inspect(sorted, { showHidden: false, depth: null }));
-
-    // console.log(arrayFiles);
-  }, 1000);
+  if (!tree.isFile) {
+    console.log(tree.name, tree.filesizeString);
+    for (let size of childrenSortSize) {
+      if (size.isFile) {
+        console.group();
+        console.log(size.name, size.filesizeString);
+        console.groupEnd();
+      } else {
+        console.group();
+        // console.log(size);
+        sizeSort(size.name);
+        console.groupEnd();
+      }
+    }
+  }
 }
 
-// checkFile(".");
+function nameSort(parent) {
+  const tree = walkDirTree(parent);
 
-/* clear the console in 10 second */
-// setTimeout(() => {
-//   console.clear();
-// }, 15_000);
+  let childrenSortSize = _.sortBy(tree.children, [
+    function (o) {
+      return o.name.toLowerCase();
+    },
+  ]);
+  if (!tree.isFile) {
+    console.log(tree.name, tree.filesizeString);
+    for (let size of childrenSortSize) {
+      if (size.isFile) {
+        console.group();
+        console.log(size.name, size.filesizeString);
+        console.groupEnd();
+      } else {
+        console.group();
+        // console.log(size);
+        sizeSort(size.name);
+        console.groupEnd();
+      }
+    }
+  }
+}
 
-//TODO printTree function
+function extSort(parent) {
+  const tree = walkDirTree(parent);
+
+  let childrenSortExt = _.sortBy(tree.children, [
+    function (o) {
+      return o.ext;
+    },
+  ]);
+  if (!tree.isFile) {
+    console.log(tree.name, tree.filesizeString);
+    for (let ext of childrenSortExt) {
+      if (ext.isFile) {
+        console.group();
+        console.log(ext.name);
+        console.groupEnd();
+      } else {
+        console.group();
+        sizeSort(ext.name);
+        console.groupEnd();
+      }
+    }
+  }
+}
+
+function printBlock(parent) {
+  const tree = walkDirTree(parent);
+
+  if (!tree.isFile) {
+    console.log(tree.name);
+    for (let children of tree.children) {
+      if (children.isFile) {
+        console.group(); // seperation
+        console.log(children.name, children.block); // printout name and size
+        console.groupEnd(); // end of seperation
+      } else {
+        console.group();
+        printBlock(children.name);
+        console.groupEnd();
+      }
+    }
+  }
+}
