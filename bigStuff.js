@@ -74,12 +74,7 @@ function usage() {
   // process.exit(0);
 }
 
-// function setGlobalFlags() {
-//   console.log("setGlobalFlags()");
-// }
-
 function walkDirTree(dirPath) {
-  // const dirName = dirPath.split("/").pop();
   dirPath += "/";
   let parentDir = {
     name: dirPath,
@@ -105,7 +100,6 @@ function walkDirTree(dirPath) {
         block: Math.ceil(size / 4096),
       };
       parentDir.children.push(file);
-      // parentDir.children[name].isFile = stat.isDirectory();
     }
   }
   parentDir.children.forEach((sizes, index) => {
@@ -124,9 +118,9 @@ function printTree(parent) {
     console.log(tree.name, tree.filesizeString);
     for (let children of tree.children) {
       if (children.isFile) {
-        console.group(); // seperation
-        console.log(children.name, children.filesizeString); // printout name and size
-        console.groupEnd(); // end of seperation
+        console.group();
+        console.log(children.name, children.filesizeString);
+        console.groupEnd();
       } else {
         console.group();
         printTree(children.name);
