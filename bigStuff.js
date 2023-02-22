@@ -7,8 +7,7 @@ let threshold = 1;
 
 let userInput = process.argv.slice(2);
 const command = userInput[0];
-const fileName = userInput[1];
-const sortCommand = userInput[2];
+const sortCommand = userInput[1];
 
 switch (command) {
   case "-p":
@@ -19,16 +18,37 @@ switch (command) {
   case "--sort":
     switch (sortCommand) {
       case "alpha":
-        nameSort(fileName);
+        process.stdout.write("Enter filename");
+        process.stdout.write("  >  ");
+        process.stdin.on("data", (data) => {
+          nameSort(data.toString().trimEnd());
+          process.exit();
+        });
+
         break;
       case "exten":
-        extSort(fileName);
+        process.stdout.write("Enter filename");
+        process.stdout.write("  >  ");
+        process.stdin.on("data", (data) => {
+          extSort(data.toString().trimEnd());
+          process.exit();
+        });
         break;
       case "size":
-        sizeSort(fileName);
+        process.stdout.write("Enter filename");
+        process.stdout.write("  >  ");
+        process.stdin.on("data", (data) => {
+          sizeSort(data.toString().trimEnd());
+          process.exit();
+        });
         break;
       default:
-        printTree(fileName);
+        process.stdout.write("Enter filename");
+        process.stdout.write("  >  ");
+        process.stdin.on("data", (data) => {
+          printTree(data.toString().trimEnd());
+          process.exit();
+        });
         break;
     }
     break;
