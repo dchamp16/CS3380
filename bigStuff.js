@@ -1,11 +1,8 @@
 const filesize = require("filesize");
 const fs = require("fs");
-const util = require("util");
 const _ = require("lodash");
 const path = require("path");
-const numberComma = (num) => new Intl.NumberFormat("en-US").format(num);
 
-// let path = ".";
 let threshold = 1;
 
 let userInput = process.argv.slice(2);
@@ -15,15 +12,11 @@ const sortCommand = userInput[2];
 
 switch (command) {
   case "-p":
-  case "-P":
-  case "--p":
-  case "--P":
+  case "--path":
     printTree(fileName);
     break;
   case "-s":
-  case "-S":
-  case "--s":
-  case "--S":
+  case "--sort":
     switch (sortCommand) {
       case "alpha":
         nameSort(fileName);
@@ -40,27 +33,19 @@ switch (command) {
     }
     break;
   case "-m":
-  case "-M":
-  case "--m":
-  case "--M":
+  case "--metric":
     printTree(fileName);
     break;
   case "-t":
-  case "-T":
-  case "--t":
-  case "--T":
-    // TODO min, only displays files and folders of at least minimum size. min is the number of billions. min may be an integer like 20 or a decimal fraction like 0.25. Default is -t 1.
+  case "--threshold":
+    getThreshold(fileName);
     break;
   case "-b":
-  case "-B":
-  case "--b":
-  case "--B":
+  case "--block":
     printBlock(fileName);
     break;
   case "-h":
-  case "-H":
-  case "--h":
-  case "--H":
+  case "--help":
     console.log(usage());
     break;
   default:
@@ -79,6 +64,7 @@ function walkDirTree(dirPath) {
   let parentDir = {
     name: dirPath,
     size: 0,
+    commaSize: "",
     filesizeString: "",
     isFile: false,
     children: [],
@@ -108,19 +94,36 @@ function walkDirTree(dirPath) {
     parentDir.children[index].filesizeString = filesize.filesize(sizes.size);
   });
   parentDir.filesizeString = filesize.filesize(parentDir.size);
+  parentDir.commaSize = parentDir.size.toLocaleString();
 
   return parentDir;
 }
+
 // walkDirTree("remove_This");
+
 function printTree(parent) {
   const tree = walkDirTree(parent);
 
   if (!tree.isFile) {
-    console.log(tree.name, tree.commaSize);
+    console.log(
+      tree.name,
+      command === "-m"
+        ? tree.filesizeString
+        : command === "--metric"
+        ? tree.filesizeString
+        : tree.commaSize
+    );
     for (let children of tree.children) {
       if (children.isFile) {
         console.group();
-        console.log(children.name, children.commaSize);
+        console.log(
+          children.name,
+          command === "-m"
+            ? children.filesizeString
+            : command === "--metric"
+            ? children.filesizeString
+            : children.commaSize
+        );
         console.groupEnd();
       } else {
         console.group();
@@ -130,9 +133,10 @@ function printTree(parent) {
     }
   }
 }
-printTree("remove_this");
 
-function sizeSort(parent, sortKind) {
+// printTree("remove_this");
+
+function sizeSort(parent) {
   const tree = walkDirTree(parent);
   let childrenSortSize = _.sortBy(tree.children, [
     function (o) {
@@ -149,7 +153,6 @@ function sizeSort(parent, sortKind) {
         console.groupEnd();
       } else {
         console.group();
-        // console.log(size);
         sizeSort(size.name);
         console.groupEnd();
       }
@@ -160,22 +163,22 @@ function sizeSort(parent, sortKind) {
 function nameSort(parent) {
   const tree = walkDirTree(parent);
 
-  let childrenSortSize = _.sortBy(tree.children, [
+  let childrenSortName = _.sortBy(tree.children, [
     function (o) {
       return o.name.toLowerCase();
     },
   ]);
+
   if (!tree.isFile) {
-    console.log(tree.name, tree.filesizeString);
-    for (let size of childrenSortSize) {
+    console.log(tree.name);
+    for (let size of childrenSortName) {
       if (size.isFile) {
         console.group();
-        console.log(size.name, size.filesizeString);
+        console.log(size.name);
         console.groupEnd();
       } else {
         console.group();
-        // console.log(size);
-        sizeSort(size.name);
+        nameSort(size.name);
         console.groupEnd();
       }
     }
@@ -190,16 +193,17 @@ function extSort(parent) {
       return o.ext;
     },
   ]);
+
   if (!tree.isFile) {
-    console.log(tree.name, tree.filesizeString);
+    console.log(tree.name);
     for (let ext of childrenSortExt) {
       if (ext.isFile) {
         console.group();
-        console.log(ext.name);
+        console.log(ext.name, ext.ext);
         console.groupEnd();
       } else {
         console.group();
-        sizeSort(ext.name);
+        extSort(ext.name);
         console.groupEnd();
       }
     }
@@ -220,6 +224,28 @@ function printBlock(parent) {
         console.group();
         printBlock(children.name);
         console.groupEnd();
+      }
+    }
+  }
+}
+
+function getThreshold(parent) {
+  const tree = walkDirTree(parent);
+  const billion = 1_000_000_000;
+
+  if (tree.size < threshold * billion) {
+    if (!tree.isFile) {
+      console.log(tree.name, tree.filesizeString);
+      for (let size of childrenSortSize) {
+        if (size.isFile) {
+          console.group();
+          console.log(size.name, size.filesizeString);
+          console.groupEnd();
+        } else {
+          console.group();
+          sizeSort(size.name);
+          console.groupEnd();
+        }
       }
     }
   }
