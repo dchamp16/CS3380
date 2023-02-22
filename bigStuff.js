@@ -18,37 +18,16 @@ switch (command) {
   case "--sort":
     switch (sortCommand) {
       case "alpha":
-        process.stdout.write("Enter filename");
-        process.stdout.write("  >  ");
-        process.stdin.on("data", (data) => {
-          nameSort(data.toString().trimEnd());
-          process.exit();
-        });
-
+        inputSortDirectory();
         break;
       case "exten":
-        process.stdout.write("Enter filename");
-        process.stdout.write("  >  ");
-        process.stdin.on("data", (data) => {
-          extSort(data.toString().trimEnd());
-          process.exit();
-        });
+        inputSortDirectory();
         break;
       case "size":
-        process.stdout.write("Enter filename");
-        process.stdout.write("  >  ");
-        process.stdin.on("data", (data) => {
-          sizeSort(data.toString().trimEnd());
-          process.exit();
-        });
+        inputSortDirectory();
         break;
       default:
-        process.stdout.write("Enter filename");
-        process.stdout.write("  >  ");
-        process.stdin.on("data", (data) => {
-          printTree(data.toString().trimEnd());
-          process.exit();
-        });
+        inputSortDirectory();
         break;
     }
     break;
@@ -271,4 +250,26 @@ function getThreshold(parent) {
   } else {
     process.exit();
   }
+}
+
+function inputSortDirectory() {
+  process.stdout.write("Enter directory name");
+  process.stdout.write("  >  ");
+  process.stdin.on("data", (data) => {
+    switch (sortCommand) {
+      case "alpha":
+        nameSort(data.toString().trimEnd());
+        break;
+      case "exten":
+        extSort(data.toString().trimEnd());
+        break;
+      case "size":
+        sizeSort(data.toString().trimEnd());
+        break;
+      default:
+        printTree(data.toString().trimEnd());
+        break;
+    }
+    process.exit();
+  });
 }
