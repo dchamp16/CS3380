@@ -248,5 +248,7 @@ function getThreshold(parent) {
         }
       }
     }
+  } else {
+    process.exit();
   }
 }
