@@ -133,7 +133,9 @@ function printTree(parent) {
   }
 }
 
-// printTree("remove_this");
+if (command === ".") {
+  printTree(".");
+}
 
 function sizeSort(parent) {
   const tree = walkDirTree(parent);
