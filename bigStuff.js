@@ -45,7 +45,7 @@ switch (command) {
     break;
   case "-h":
   case "--help":
-    console.log(usage());
+    usage();
     break;
   default:
     break;
@@ -54,7 +54,14 @@ switch (command) {
 // ---------------
 
 function usage() {
-  return fs.readFileSync("./help.txt", "utf-8");
+  // let lang = "en";
+  // let loc = "US";
+  process.stdout.write("Enter Language");
+  process.stdout.write("  >  ");
+  // process.stdin.on("data", (data) => {
+  //   console.log(data.toString().trimEnd()); //TODO need to get user prefer language help
+  // });
+  // return fs.readFileSync(`./help-${lang}-${loc}.txt`, "utf-8");
   // process.exit(0);
 }
 
