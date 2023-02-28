@@ -23,3 +23,4 @@ Solution:
     b. environment variables
     c. default
     d. command line arg to a config file
+6. pcik regEx filter (builtin) xor globing glob.js
