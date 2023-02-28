@@ -1,0 +1,16 @@
+Problems:
+1. Block size is/was confusing. bang for the buck (more accurate size)
+2. relative path looks nice, but not as convenient for the manual process afterwards
+3. lacks color for dir and files
+4. takes a long time (it is harder to read from drive than the memory)
+5. their own language and locale(numbers, dates, times)
+
+
+Solution:
+1. drop block size
+2. print absolute path
+3. add colors
+4.
+    a. add animation
+    b. look into some inefficiencies, such as extra recursion
+    c. fundamentally thats the cost of doing business
