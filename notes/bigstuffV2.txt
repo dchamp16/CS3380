@@ -14,3 +14,4 @@ Solution:
     a. add animation
     b. look into some inefficiencies, such as extra recursion
     c. fundamentally thats the cost of doing business
+5. i18n i10n 
