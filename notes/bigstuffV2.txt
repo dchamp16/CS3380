@@ -4,6 +4,10 @@ Problems:
 3. lacks color for dir and files
 4. takes a long time (it is harder to read from drive than the memory)
 5. their own language and locale(numbers, dates, times)
+    a. how does the user pick the lang and loc
+6. nicer to have regEx filtering or globbing
+7. no error messages
+8. doesnt work at the drive root
 
 
 Solution:
@@ -14,4 +18,8 @@ Solution:
     a. add animation
     b. look into some inefficiencies, such as extra recursion
     c. fundamentally thats the cost of doing business
-5. i18n i10n 
+5. write in i18n i10n 
+    a. lang and loc command line argos
+    b. environment variables
+    c. default
+    d. command line arg to a config file
