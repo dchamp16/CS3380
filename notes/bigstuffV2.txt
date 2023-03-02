@@ -11,16 +11,18 @@ Problems:
 
 
 Solution:
-1. drop block size
-2. print absolute path
-3. add colors
+1. drop block size (10min)
+2. print absolute path (10min)
+3. add colors, use chalk.js (30min)
 4.
-    a. add animation
-    b. look into some inefficiencies, such as extra recursion
+    a. add animation (30min)
+    b. look into some inefficiencies, such as extra recursion (1-2hrs)
     c. fundamentally thats the cost of doing business
 5. write in i18n i10n 
-    a. lang and loc command line argos
-    b. environment variables
+    a. lang and loc command line argos (1hr)
+    b. environment variables 
     c. default
     d. command line arg to a config file
-6. pcik regEx filter (builtin) xor globing glob.js
+6. pick regEx filter (builtin) xor globing glob.js (1-2hrs)
+7. put in error handling (msg to user and print help) (1hr)
+8. more error handling (silently swallow the error and move on)

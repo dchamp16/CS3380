@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "chalk": "^5.2.0",
     "filesize": "^10.0.6",
     "lodash": "^4.17.21"
   }
