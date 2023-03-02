@@ -26,3 +26,5 @@ Solution:
 6. pick regEx filter (builtin) xor globing glob.js (1-2hrs)
 7. put in error handling (msg to user and print help) (1hr)
 8. more error handling (silently swallow the error and move on)
+
+CLI-progress << progress bar

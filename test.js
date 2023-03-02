@@ -1,3 +1,4 @@
 import chalk from "chalk";
 
-console.log(chalk.blue("Hello world!"));
+// Combine styled and normal strings
+console.log(chalk.bgBlueBright("Hello") + " World" + chalk.red("!"));
