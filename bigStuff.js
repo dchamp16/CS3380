@@ -39,10 +39,10 @@ switch (command) {
   case "--threshold":
     getThreshold(fileName);
     break;
-  case "-b":
-  case "--block":
-    printBlock(fileName);
-    break;
+  // case "-b":
+  // case "--block":
+  //   printBlock(fileName);
+  //   break;
   case "-h":
   case "--help":
     usage();
@@ -218,24 +218,24 @@ function extSort(parent) {
   }
 }
 
-function printBlock(parent) {
-  const tree = walkDirTree(parent);
+// function printBlock(parent) {
+//   const tree = walkDirTree(parent);
 
-  if (!tree.isFile) {
-    console.log(tree.name);
-    for (let children of tree.children) {
-      if (children.isFile) {
-        console.group(); // seperation
-        console.log(children.name, children.block); // printout name and size
-        console.groupEnd(); // end of seperation
-      } else {
-        console.group();
-        printBlock(children.name);
-        console.groupEnd();
-      }
-    }
-  }
-}
+//   if (!tree.isFile) {
+//     console.log(tree.name);
+//     for (let children of tree.children) {
+//       if (children.isFile) {
+//         console.group(); // seperation
+//         console.log(children.name, children.block); // printout name and size
+//         console.groupEnd(); // end of seperation
+//       } else {
+//         console.group();
+//         printBlock(children.name);
+//         console.groupEnd();
+//       }
+//     }
+//   }
+// }
 
 function getThreshold(parent) {
   const tree = walkDirTree(parent);
