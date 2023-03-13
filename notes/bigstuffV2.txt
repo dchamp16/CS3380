@@ -1,5 +1,5 @@
 Problems:
-1. Block size is/was confusing. bang for the buck (more accurate size)
+1. Block size is/was confusing. bang for the buck (more accurate size) good
 2. relative path looks nice, but not as convenient for the manual process afterwards
 3. lacks color for dir and files
 4. takes a long time (it is harder to read from drive than the memory)
