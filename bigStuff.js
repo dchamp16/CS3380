@@ -2,7 +2,11 @@ const filesize = require("filesize");
 const fs = require("fs");
 const _ = require("lodash");
 const path = require("path");
+const chalk = require('chalk')
 
+console.log(chalk.blue("Hello world!"));
+
+/*
 let threshold = 1;
 
 let userInput = process.argv.slice(2);
@@ -282,3 +286,4 @@ function inputSortDirectory() {
     process.exit();
   });
 }
+*/
