@@ -2,11 +2,10 @@ const filesize = require("filesize");
 const fs = require("fs");
 const _ = require("lodash");
 const path = require("path");
-const chalk = require('chalk')
+const chalk = require("chalk");
 
-console.log(chalk.blue("Hello world!"));
+// console.log(chalk.blue("Hello world!"));
 
-/*
 let threshold = 1;
 
 let userInput = process.argv.slice(2);
@@ -60,12 +59,17 @@ switch (command) {
 function usage() {
   // let lang = "en";
   // let loc = "US";
-  process.stdout.write("Enter Language");
-  process.stdout.write("  >  ");
+  // process.stdout.write("Enter Language");
+  // process.stdout.write("  >  ");
   // process.stdin.on("data", (data) => {
   //   console.log(data.toString().trimEnd()); //TODO need to get user prefer language help
   // });
   // return fs.readFileSync(`./help-${lang}-${loc}.txt`, "utf-8");
+  console.log(
+    chalk.bgGreenBright(
+      fs.readFileSync("help-en-US.txt", { encoding: "utf8", flag: "r" })
+    )
+  );
   // process.exit(0);
 }
 
@@ -286,4 +290,3 @@ function inputSortDirectory() {
     process.exit();
   });
 }
-*/
