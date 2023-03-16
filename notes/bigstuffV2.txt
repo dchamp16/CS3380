@@ -28,3 +28,8 @@ Solution:
 8. more error handling (silently swallow the error and move on)
 
 CLI-progress << progress bar
+
+
+
+
+-h, --help: print this usage screen << translate this to spanish for spanish
