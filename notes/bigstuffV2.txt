@@ -33,3 +33,5 @@ CLI-progress << progress bar
 
 
 -h, --help: print this usage screen << translate this to spanish for spanish
+-lang, --language character language code all messages are in that language if available such as de for German
+Default is en for English
