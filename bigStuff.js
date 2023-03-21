@@ -12,6 +12,11 @@ const sortCommand = userInput[1];
 const lang = userInput[1];
 const loc = userInput[2];
 
+// console.log(
+//   `lang: ${typeof lang === "undefined"} loc: ${typeof loc === "undefined"}`
+// );
+// return;
+
 switch (command) {
   case "-p":
   case "--path":
@@ -57,15 +62,23 @@ switch (command) {
 // ---------------
 
 function usage() {
-  console.log(
-    chalk.bgGreenBright(
-      fs.readFileSync(`help-${lang}-${loc}.txt`, {
-        encoding: "utf8",
-        flag: "r",
-      })
-    )
+  let printHelp = chalk.bgGreenBright(
+    fs.readFileSync(`help-${lang}-${loc}.txt`, {
+      encoding: "utf8",
+      flag: "r",
+    })
   );
-  // process.exit(0);
+  const defaultLang = chalk.bgBlue(
+    fs.readFileSync(`help-en-US.txt`, {
+      encoding: "utf8",
+      flag: "r",
+    })
+  );
+  if (typeof lang === "undefined" && typeof loc === "undefined") {
+    console.log(defaultLang);
+  } else {
+    console.log(printHelp);
+  }
 }
 
 function walkDirTree(dirPath) {
