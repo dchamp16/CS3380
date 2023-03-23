@@ -3,6 +3,7 @@ const fs = require("fs");
 const _ = require("lodash");
 const path = require("path");
 const chalk = require("chalk");
+const { glob, globSync, globStream, globStreamSync, Glob } = require("glob");
 
 let threshold = 1;
 
@@ -11,13 +12,25 @@ const command = userInput[0];
 const sortCommand = userInput[1];
 const lang = userInput[1];
 const loc = userInput[2];
-
-// console.log(
-//   `lang: ${typeof lang === "undefined"} loc: ${typeof loc === "undefined"}`
-// );
-// return;
+const directory = userInput[2];
+const fileExt = userInput[3];
 
 switch (command) {
+  // still need to fix
+  case "-g":
+  case "--glob":
+    if (sortCommand !== "" || directory !== "" || fileExt !== "") {
+      globbing(directory, fileExt);
+    } else {
+      let printHelp = chalk.bgGreenBright(
+        fs.readFileSync(`help-en-US.txt`, {
+          encoding: "utf8",
+          flag: "r",
+        })
+      );
+      console.log(printHelp);
+    }
+    break;
   case "-p":
   case "--path":
     printTree(fileName);
@@ -47,10 +60,6 @@ switch (command) {
   case "--threshold":
     getThreshold(fileName);
     break;
-  // case "-b":
-  // case "--block":
-  //   printBlock(fileName);
-  //   break;
   case "-h":
   case "--help":
     usage();
@@ -62,21 +71,21 @@ switch (command) {
 // ---------------
 
 function usage() {
-  let printHelp = chalk.bgGreenBright(
-    fs.readFileSync(`help-${lang}-${loc}.txt`, {
-      encoding: "utf8",
-      flag: "r",
-    })
-  );
-  const defaultLang = chalk.bgBlue(
-    fs.readFileSync(`help-en-US.txt`, {
-      encoding: "utf8",
-      flag: "r",
-    })
-  );
   if (typeof lang === "undefined" && typeof loc === "undefined") {
+    const defaultLang = chalk.bgBlue(
+      fs.readFileSync(`help-en-US.txt`, {
+        encoding: "utf8",
+        flag: "r",
+      })
+    );
     console.log(defaultLang);
   } else {
+    let printHelp = chalk.bgGreenBright(
+      fs.readFileSync(`help-${lang}-${loc}.txt`, {
+        encoding: "utf8",
+        flag: "r",
+      })
+    );
     console.log(printHelp);
   }
 }
@@ -162,6 +171,8 @@ if (command === ".") {
 
 function sizeSort(parent) {
   const tree = walkDirTree(parent);
+
+  console.log(tree);
   let childrenSortSize = _.sortBy(tree.children, [
     function (o) {
       return o.size;
@@ -234,25 +245,6 @@ function extSort(parent) {
   }
 }
 
-// function printBlock(parent) {
-//   const tree = walkDirTree(parent);
-
-//   if (!tree.isFile) {
-//     console.log(tree.name);
-//     for (let children of tree.children) {
-//       if (children.isFile) {
-//         console.group(); // seperation
-//         console.log(children.name, children.block); // printout name and size
-//         console.groupEnd(); // end of seperation
-//       } else {
-//         console.group();
-//         printBlock(children.name);
-//         console.groupEnd();
-//       }
-//     }
-//   }
-// }
-
 function getThreshold(parent) {
   const tree = walkDirTree(parent);
   const billion = 1_000_000_000;
@@ -298,3 +290,65 @@ function inputSortDirectory() {
     process.exit();
   });
 }
+
+function globbing(directory, ext) {
+  const filesStream = globSync(`${directory}/**/*.${ext}`);
+
+  const regex = `\\w+\.${ext}`;
+  const regexFileName = new RegExp(regex, "g");
+
+  let statObj = [
+    {
+      name: "",
+      size: 0,
+      sizeString: "",
+    },
+  ];
+  for (let file of filesStream) {
+    const stat = fs.statSync(file);
+    statObj.push({
+      name: file.match(regexFileName).toLocaleString(),
+      size: stat.size,
+      sizeString: filesize.filesize(stat.size),
+    });
+  }
+
+  console.log(statObj);
+  switch (sortCommand) {
+    case "alpha":
+      let sortName = _.sortBy(statObj, (o) => o.name.toLowerCase());
+      sortName.forEach((data) => console.log(data.name, data.sizeString));
+      break;
+    case "size":
+      let sortSize = _.sortBy(statObj, (o) => o.size).reverse();
+      sortSize.forEach((data) => {
+        console.log(
+          `${data.name} \t\t ${
+            data.size < 1000
+              ? chalk.bgGreen(data.sizeString)
+              : chalk.bgRed(data.sizeString)
+          }`
+        );
+      });
+      break;
+  }
+}
+
+// function printBlock(parent) {
+//   const tree = walkDirTree(parent);
+
+//   if (!tree.isFile) {
+//     console.log(tree.name);
+//     for (let children of tree.children) {
+//       if (children.isFile) {
+//         console.group(); // seperation
+//         console.log(children.name, children.block); // printout name and size
+//         console.groupEnd(); // end of seperation
+//       } else {
+//         console.group();
+//         printBlock(children.name);
+//         console.groupEnd();
+//       }
+//     }
+//   }
+// }
