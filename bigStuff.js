@@ -14,12 +14,29 @@ const lang = userInput[1];
 const loc = userInput[2];
 const directory = userInput[2];
 const fileExt = userInput[3];
+// console.log(
+//   `sortCommand: ${typeof sortCommand} directory: ${typeof directory} fileExt: ${typeof fileExt}`
+// );
+
+// if (
+//   typeof sortCommand !== "undefined" &&
+//   typeof directory !== "undefined" &&
+//   typeof fileExt !== "undefined"
+// ) {
+//   console.log("peter");
+// } else {
+//   console.log("justine");
+// }
+// return;
 
 switch (command) {
-  // still need to fix
   case "-g":
   case "--glob":
-    if (sortCommand !== "" || directory !== "" || fileExt !== "") {
+    if (
+      typeof sortCommand !== "undefined" &&
+      typeof directory !== "undefined" &&
+      typeof fileExt !== "undefined"
+    ) {
       globbing(directory, fileExt);
     } else {
       let printHelp = chalk.bgGreenBright(
