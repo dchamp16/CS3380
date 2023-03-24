@@ -303,12 +303,14 @@ function globbing(directory, ext) {
     stat: true,
     withFileTypes: true,
   })) {
+    spinner.tick();
     statObj.push({
       name: file.name,
       size: file.size,
       sizeString: filesize.filesize(file.size),
     });
   }
+  spinner.clear();
   switch (sortCommand) {
     case "alpha":
       let sortName = _.sortBy(statObj, (o) => o.name);
@@ -342,8 +344,8 @@ function makeCounter() {
     process.stdout.write(`\r`);
   }
   function tick() {
-    if (n % 997 === 0)
-      process.stdout.write(`\r${spinningChars[n % spinningChars.length]}`);
+    let animate = `\r${spinningChars[n % spinningChars.length]}`;
+    if (n % 3 === 0) process.stdout.write(`${animate}LOADING${animate}`);
     n++;
   }
   return { tick, clear };
