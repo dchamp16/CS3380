@@ -3,7 +3,7 @@ const fs = require("fs");
 const _ = require("lodash");
 const path = require("path");
 const chalk = require("chalk");
-const { glob, globSync, globStream, globStreamSync, Glob } = require("glob");
+const { globIterateSync } = require("glob");
 
 let threshold = 1;
 
@@ -16,7 +16,6 @@ const directory = userInput[2];
 const fileExt = userInput[3];
 
 switch (command) {
-  // still need to fix
   case "-g":
   case "--glob":
     if (sortCommand !== "" || directory !== "" || fileExt !== "") {
@@ -67,8 +66,6 @@ switch (command) {
   default:
     break;
 }
-
-// ---------------
 
 function usage() {
   if (typeof lang === "undefined" && typeof loc === "undefined") {
@@ -129,8 +126,6 @@ function walkDirTree(dirPath) {
 
   return parentDir;
 }
-
-// walkDirTree("remove_This");
 
 function printTree(parent) {
   const tree = walkDirTree(parent);
@@ -292,11 +287,7 @@ function inputSortDirectory() {
 }
 
 function globbing(directory, ext) {
-  const filesStream = globSync(`${directory}/**/*.${ext}`);
-
-  const regex = `\\w+\.${ext}`;
-  const regexFileName = new RegExp(regex, "g");
-
+  let spinner = makeCounter();
   let statObj = [
     {
       name: "",
@@ -304,24 +295,29 @@ function globbing(directory, ext) {
       sizeString: "",
     },
   ];
-  for (let file of filesStream) {
-    const stat = fs.statSync(file);
+  for (const file of globIterateSync(`${directory}/**/*.${ext}`, {
+    stat: true,
+    withFileTypes: true,
+  })) {
     statObj.push({
-      name: file.match(regexFileName).toLocaleString(),
-      size: stat.size,
-      sizeString: filesize.filesize(stat.size),
+      name: file.name,
+      size: file.size,
+      sizeString: filesize.filesize(file.size),
     });
   }
-
-  console.log(statObj);
   switch (sortCommand) {
     case "alpha":
-      let sortName = _.sortBy(statObj, (o) => o.name.toLowerCase());
-      sortName.forEach((data) => console.log(data.name, data.sizeString));
+      let sortName = _.sortBy(statObj, (o) => o.name);
+      sortName.forEach((data) => {
+        spinner.tick();
+        console.log(data.name, data.sizeString);
+        spinner.clear();
+      });
       break;
     case "size":
       let sortSize = _.sortBy(statObj, (o) => o.size).reverse();
       sortSize.forEach((data) => {
+        spinner.tick();
         console.log(
           `${data.name} \t\t ${
             data.size < 1000
@@ -329,11 +325,27 @@ function globbing(directory, ext) {
               : chalk.bgRed(data.sizeString)
           }`
         );
+        spinner.clear();
       });
       break;
   }
 }
 
+function makeCounter() {
+  const spinningChars = `|/-\\`;
+  let n = 0;
+  function clear() {
+    process.stdout.write(`\r`);
+  }
+  function tick() {
+    if (n % 997 === 0)
+      process.stdout.write(`\r${spinningChars[n % spinningChars.length]}`);
+    n++;
+  }
+  return { tick, clear };
+}
+
+// elpahant graveyard
 // function printBlock(parent) {
 //   const tree = walkDirTree(parent);
 

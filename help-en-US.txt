@@ -9,4 +9,4 @@ Default is unsorted
 -t, --threshold min, only displays files and folders of at least minimum size. min is the number of billions. min may be an integer like 20 or a decimal fraction like 0.25. Default is -t 1.
 -b, --blocksize, displays the actual storage sizes on disk. default is not blocksize
 -g, --glob, alpha | size, <directory>, <file extension> display specific file extention
--h, --help prints this usage screen. Ignores all other arguments.
+-h, --help <lang> <location> prints this usage screen. Ignores all other arguments.
