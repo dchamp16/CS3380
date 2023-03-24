@@ -18,7 +18,11 @@ const fileExt = userInput[3];
 switch (command) {
   case "-g":
   case "--glob":
-    if (sortCommand !== "" || directory !== "" || fileExt !== "") {
+    if (
+      typeof sortCommand !== "undefined" &&
+      typeof directory !== "undefined" &&
+      typeof fileExt !== "undefined"
+    ) {
       globbing(directory, fileExt);
     } else {
       let printHelp = chalk.bgGreenBright(
@@ -364,3 +368,18 @@ function makeCounter() {
 //     }
 //   }
 // }
+
+// console.log(
+//   `sortCommand: ${typeof sortCommand} directory: ${typeof directory} fileExt: ${typeof fileExt}`
+// );
+
+// if (
+//   typeof sortCommand !== "undefined" &&
+//   typeof directory !== "undefined" &&
+//   typeof fileExt !== "undefined"
+// ) {
+//   console.log("peter");
+// } else {
+//   console.log("justine");
+// }
+// return;
