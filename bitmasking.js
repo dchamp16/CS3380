@@ -7,32 +7,23 @@ const bitMask = [
 ];
 
 function isPosInt(x) {
-  //TODO return true if x is a positive integer; otherwise false
-
-  let positive = x > 0 && Number.isInteger(x) && x % 1 === 0 ? true : false;
-  //example param values
-  //[40] false because it's an array
-  //{  } false because it's an object
-  //'50' false because it's a string
-  //40.5 false because it's float
-  //-890 false because it's negative
-  //3000 true
-  //HINT look at Number methods
-  return positive;
+  return (positive =
+    x > 0 && Number.isInteger(x) && x % 1 === 0 ? true : false);
 }
-// console.log("false\t" + isPosInt([40]));
-// console.log("false\t" + isPosInt({}));
-// console.log("false\t" + isPosInt("50"));
-// console.log("false\t" + isPosInt(40.5));
-// console.log("false\t" + isPosInt(70.1));
-// console.log("false\t" + isPosInt(31.8));
-// console.log("false\t" + isPosInt(-890));
-// console.log("true\t" + isPosInt(3000));
-// console.log("true\t" + isPosInt(1));
-
 function bitArray(bitSize) {
   if (!isPosInt(bitSize)) {
     console.error("A bitArray can only be created with a positive integer.");
+    let type = os.type();
+
+    switch (type) {
+      case "Windows_NT":
+        process.exit(13);
+        break;
+      default:
+        process.exit(33);
+        break;
+    }
+
     process.exit(1); //TODO detect the OS and return the correct status code
     //13 for Windows
     //33 for OsX/Linux
