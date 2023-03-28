@@ -94,7 +94,7 @@ function test() {
   // }
 }
 
-const bits = new bitArray(-1);
+const bits = new bitArray(5);
 console.log(bits.get(0));
 bits.set(0);
 console.log(bits.get(0));
