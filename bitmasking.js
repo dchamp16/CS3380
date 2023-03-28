@@ -89,12 +89,14 @@ function test() {
   bits.flip(2);
   console.assert(bits.get(2) === 1, "get(2) : 1");
 
-  // for (let i = 0; i < 32; i++) {
-  //   console.log(i, bits.get(i))
-  // }
+  for (let i = 0; i < 32; i++) {
+    console.log(i, bits.get(i));
+  }
 }
 
-const bits = new bitArray(5);
+// test();
+
+const bits = new bitArray(20);
 console.log(bits.get(0));
 bits.set(0);
 console.log(bits.get(0));

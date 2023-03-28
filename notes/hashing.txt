@@ -1,0 +1,5 @@
+hashing function - bcrypt
+"cat"(salting - it added noise) -> hashing function -> return number
+"dog"(salting - it added noise) -> hashing function -> return number
+
+the number mod(number) / 2000
