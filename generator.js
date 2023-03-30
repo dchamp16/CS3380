@@ -46,6 +46,7 @@ function* pwsOfLen(n) {
     }
   }
 }
+function* pwsOfLenUpTo(n) {}
 
 function main() {
   for (let word of pwsOfLen(4)) {
