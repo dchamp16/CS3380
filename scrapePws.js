@@ -25,13 +25,14 @@ const puppeteer = require("puppeteer");
         password: password,
       });
     });
-    arrayPasswords.flat();
-    console.log(arrayPasswords);
-    // fs.appendFile(
-    //   "mcupws.json",
-    //   JSON.stringify(arrayPasswords, null, 2),
-    //   (err) => (err ? console.log(err) : console.log(`Page ${i} done`))
-    // );
+    let combinePass = [];
+    combinePass.push(arrayPasswords);
+    combinePass.flat();
+
+    // console.log(combinePass);
+    fs.appendFile("mcupws.json", JSON.stringify(combinePass, null, 2), (err) =>
+      err ? console.log(err) : console.log(`Page ${i} done`)
+    );
   }
 
   await browser.close();
