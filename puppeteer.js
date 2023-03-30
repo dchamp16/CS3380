@@ -2,10 +2,12 @@ const fs = require("fs");
 const puppeteer = require("puppeteer");
 
 (async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(`https://www.passwordrandom.com/most-popular-passwords`);
-  let i = 1;
+  const browser = await puppeteer.launch(); // open a browser
+  const page = await browser.newPage(); //launch a new page
+  const url = `https://www.passwordrandom.com/most-popular-passwords`; //main page
+  await page.goto(url); // go to https://www.passwordrandom.com/most-popular-passwords
+
+  //
   while (true) {
     const data = await page.evaluate(() => {
       const tds = Array.from(
@@ -17,17 +19,15 @@ const puppeteer = require("puppeteer");
     data.forEach((password, key) => {
       passwords.push({ key: key, password: password });
     });
-    await page.waitForTimeout(1000);
     const nextButton = await page.$(".next a");
 
     if (!nextButton) {
       break;
     }
     await Promise.all([page.waitForNavigation(), nextButton.click()]);
-    fs.appendFile("test.txt", JSON.stringify(passwords), (err) =>
+    fs.appendFile("test.txt", `${JSON.stringify(passwords)}\n`, (err) =>
       err ? console.log(err) : console.log("file written")
     );
-    // console.log(passwords);
   }
 
   await browser.close();
