@@ -14,3 +14,12 @@ const puppeteer = require('puppeteer');
 
   await browser.close();
 })();
+
+
+/*
+In this example, we first launch a new instance of Puppeteer, navigate to a web page, and then use the page.$$ method to select all <td> elements on the page. We then loop through each <td> element and use the getProperty method to get its text content. Finally, we log the text content to the console.
+
+Note that this is just a basic example, and there are many other ways to use Puppeteer to select and interact with specific elements on a page.
+
+
+ */
