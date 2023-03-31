@@ -1,11 +1,14 @@
 const fs = require("fs");
 const puppeteer = require("puppeteer");
 
+let arrayPasswords = [];
+
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  for (let i = 1; i <= 100; i++) {
+  //loop change from 100 to 5 for testing purposes need to change back when done
+  for (let i = 1; i <= 5; i++) {
     let url = `https://www.passwordrandom.com/most-popular-passwords/page/${i}`;
     await page.goto(url);
     console.log(url); //print each url
@@ -17,21 +20,24 @@ const puppeteer = require("puppeteer");
       return tds.map((td) => td.innerText);
     });
     /* ----------------- */
-    let arrayPasswords = []; //TODO need to combine all array
+
     let count = 1;
     data.forEach((password) => {
       arrayPasswords.push({
         page: `Page-${i}`,
+        key: count++,
         password: password,
       });
     });
-    let combinePass = [];
-    combinePass.push(arrayPasswords);
-    combinePass.flat();
+    // let combinePass = [];
+    // combinePass.push(arrayPasswords);
+    // let scrapedPass = combinePass.flat();
 
-    // console.log(combinePass);
-    fs.appendFile("mcupws.json", JSON.stringify(combinePass, null, 2), (err) =>
-      err ? console.log(err) : console.log(`Page ${i} done`)
+    // console.log(scrapedPass);
+    fs.appendFile(
+      "mcupws.json",
+      JSON.stringify(arrayPasswords, null, 2),
+      (err) => (err ? console.log(err) : console.log(`Page ${i} done`))
     );
   }
 
