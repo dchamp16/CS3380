@@ -19,7 +19,7 @@ const puppeteer = require("puppeteer");
   let passwords = Object.assign(objPass, flattendArr)
 
   // console.log(passwords);
-  fs.writeFileSync("mcupws.json", JSON.stringify(passwords), (err) =>
+  fs.writeFi("mcupws.json", JSON.stringify(passwords), (err) =>
     err ? console.log(err) : console.log(`Print done`)
   );
   // console.log(arrPassContainer);
