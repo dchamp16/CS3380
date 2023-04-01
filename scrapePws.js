@@ -19,8 +19,8 @@ const puppeteer = require("puppeteer");
     spinner.clear();
   }
   let flattendArr = arrPassContainer.flat();
-  flattendArr.sort();
-  let passwords = Object.assign(objPass, flattendArr);
+  const filteredArr = flattendArr.filter((data) => /^[a-zA-Z0-9]+$/.test(data));
+  let passwords = Object.assign(objPass, filteredArr);
 
   fs.writeFileSync("mcupws.json", JSON.stringify(passwords), (err) =>
     err ? console.log(err) : console.log(`Print done`)
