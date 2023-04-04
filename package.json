@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "chalk": "^4.1.0",
     "cli-progress": "^3.12.0",
@@ -7,5 +10,8 @@
     "lodash": "^4.17.21",
     "nodemon": "^2.0.22",
     "puppeteer": "^19.8.2"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
   }
 }
