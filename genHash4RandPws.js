@@ -28,9 +28,9 @@ fs.readFile("mcupws.json", "utf8", (error, data) => {
   }
   /* --------------- */
   const hashes = [];
-
+  const salt = bcrypt.genSaltSync(4);
   for (let pw of arrPass) {
-    const hash = bcrypt.hashSync(pw, 4);
+    const hash = bcrypt.hashSync(pw, salt);
     hashes.push(hash);
   }
   const shuffledHashes = _.shuffle(hashes);
