@@ -15,7 +15,7 @@ fs.readFile("mcupws.json", "utf8", (error, data) => {
   /* generator */
   const gen = alphanumericGenerator();
 
-  for (let i = 0; i < 390 + 99 + 10; i++) {
+  for (let i = 0; i < 390 + 100 + 10; i++) {
     arrPass.push(gen.next().value);
   }
   /* --------------- */
