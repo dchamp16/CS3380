@@ -21,7 +21,7 @@ fs.readFile("mcupws.json", "utf8", (error, data) => {
   /* --------------- */
 
   /* generate empty string */
-  let emptryString = 0;
+  let emptryString = 1;
   while (emptryString <= 500) {
     arrPass.push("");
     emptryString++;
