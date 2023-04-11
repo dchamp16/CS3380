@@ -37,11 +37,9 @@ fs.readFile("hashtest.txt", "utf-8", (err, peerPass) => {
     console.time("cracking");
     for (let k = 0; k < peerHashed.length; k++) {
       for (let j = 0; j < crackingPass.length; j++) {
-        let compare = bcrypt.compare(crackingPass[j], peerHashed[k]);
+        let compare = bcrypt.compareSync(crackingPass[j], peerHashed[k]);
         if (compare) {
-          // console.log(peerHashed[k], crackingPass[j]);
-        } else {
-          // console.log(peerHashed);
+          console.log(peerHashed[k], crackingPass[j]);
         }
       }
     }
