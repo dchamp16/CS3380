@@ -33,13 +33,13 @@ fs.readFile("hashtest.txt", "utf-8", (err, peerPass) => {
     for (let i = 0; i < 9983; i++) {
       crackingPass.push(jsonObject[i]);
     }
-    console.log(crackingPass);
     console.time("cracking");
-    for (let k = 0; k < peerHashed.length; k++) {
-      for (let j = 0; j < crackingPass.length; j++) {
-        let compare = bcrypt.compareSync(crackingPass[j], peerHashed[k]);
+
+    for (let j = 0; j < peerHashed.length; j++) {
+      for (let k = 0; k < crackingPass.length; k++) {
+        let compare = bcrypt.compareSync(crackingPass[k], peerHashed[j]);
         if (compare) {
-          console.log(peerHashed[k], crackingPass[j]);
+          console.log(crackingPass[k], peerHashed[j]);
         }
       }
     }
