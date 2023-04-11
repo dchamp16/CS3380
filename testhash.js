@@ -38,9 +38,13 @@ let peerHashed = [
 ];
 for (let i = 0; i < peerHashed.length; i++) {
   for (let j = 0; j < crackingPass.length; j++) {
-    let compare = bcrypt.compareSync(crackingPass[j], peerHashed[i]);
-    if (compare) {
-      console.log(crackingPass[j], peerHashed[i]);
+    try {
+      let compare = bcrypt.compareSync(crackingPass[j], peerHashed[i]);
+      if (compare) {
+        console.log(crackingPass[j], peerHashed[i]);
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 }
