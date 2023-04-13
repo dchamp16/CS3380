@@ -2,14 +2,17 @@ const bcrypt = require("bcryptjs");
 const fs = require("fs");
 const _ = require("lodash");
 
-function* pwsOfLen(n) {
-  const alphanumeric =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  if (n === 1) yield* alphanumeric;
+const ALPHABET =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+function* genCh(len) {
+  if (len === 1) yield* ALPHABET;
   else {
-    yield* _.flatMap(alphanumeric, (ch1) => {
-      return _.map(pwsOfLen(n - 1), (ch2) => ch1 + ch2);
-    });
+    for (let ch1 of ALPHABET) {
+      for (let ch2 of genCh(len - 1)) {
+        yield ch1 + ch2;
+      }
+    }
   }
 }
 
@@ -19,11 +22,7 @@ function* pwsOfLen(n) {
   );
 
   // Generate passwords up to a maximum length of 8 characters
-  const maxLength = 8;
-  let listPass = [...textPass, ""];
-  for (let len = 1; len <= maxLength; len++) {
-    listPass.push(...pwsOfLen(len));
-  }
+  let listPass = [...textPass, "", ...genCh(1), ...genCh(2), ...genCh(3)];
 
   let partnerHash = fs
     .readFileSync("ZhihuiChen.2k.hashes.txt", "utf-8")
