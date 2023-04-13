@@ -1,0 +1,10 @@
+CPU cores: Central Processing Unit
+    - virtual threads: 6 + 6 == 9
+GPU cores: Graphic Processing Unit
+    - graphics AMD/NVDIA/ARM
+IPC: Inter Processing Communcation
+    - Law of Diminishing Returns
+Process
+    - 12 processes each with 1 thread every process has its heap, thread but different stack
+Thread (piece of a program)
+    - stack
