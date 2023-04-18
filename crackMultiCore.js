@@ -53,21 +53,18 @@ if (cluster.isPrimary) {
   });
 } else {
   process.on("message", async ({ start, end }) => {
-    let partnerHash = fs
+    let hashList = fs
       .readFileSync("./ZhihuiChen.2k.hashes.txt", "utf8")
       .split("\n")
       .slice(start, end);
-    partnerHash = await Promise.all(
-      partnerHash.map(async (hash) => {
+    hashList = await Promise.all(
+      hashList.map(async (hash) => {
         const result = `${hash} ${await bcryptCompare(hash)}`;
         console.log(`Hash processed: ${result}`);
         return result;
       })
     );
-    fs.appendFileSync(
-      "./hashes.answers.txt",
-      [partnerHash.join("\n")].join("")
-    );
+    fs.appendFileSync("./hashes.answers.txt", [hashList.join("\n")].join(""));
     process.exit();
   });
 }
