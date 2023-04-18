@@ -1,10 +1,11 @@
+const fs = require("fs");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
-const { readFileSync, appendFileSync, existsSync, unlink } = require("fs");
 const bcrypt = require("bcryptjs");
 
 const ALPHABET =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 function* genCh(len) {
   if (len === 1) yield* ALPHABET;
   else {
@@ -15,9 +16,10 @@ function* genCh(len) {
     }
   }
 }
-const strLst = [
+
+const stringsList = [
   "",
-  ...Object.values(JSON.parse(readFileSync("./mcupws.json", "utf8"))),
+  ...Object.values(JSON.parse(fs.readFileSync("./mcupws.json", "utf8"))),
   ...genCh(1),
   ...genCh(2),
   ...genCh(3),
@@ -25,9 +27,10 @@ const strLst = [
 
 if (cluster.isPrimary) {
   console.time(`${numCPUs} cores sync`);
-  if (existsSync("./hashes.answers.txt")) {
-    unlink("./hashes.answers.txt", (err) => {
+  if (fs.existsSync("./hashes.answers.txt")) {
+    fs.unlink("./hashes.answers.txt", (err) => {
       if (err) throw err;
+      console.log("Removed old hashes.answers.txt");
     });
   }
   const [, , qty] = process.argv.map(Number);
@@ -43,20 +46,34 @@ if (cluster.isPrimary) {
   cluster.on("exit", () => {
     workersCompleted++;
     if (workersCompleted === numCPUs) {
-      // when all workers are done
-      console.timeEnd(`${numCPUs} cores sync`); // 10 cores sync: 15:50.058 (m:ss.mmm) for submittion
+      console.timeEnd(`${numCPUs} cores sync`); //10 cores sync: 21:44.179 (m:ss.mmm)
+      console.log("All workers completed");
       process.exit();
     }
   });
 } else {
-  process.on("message", ({ start, end }) => {
-    let hashLst = readFileSync("./hashtest.txt", "utf8")
+  process.on("message", async ({ start, end }) => {
+    let hashList = fs
+      .readFileSync("./ZhihuiChen.2k.hashes.txt", "utf8")
       .split("\n")
       .slice(start, end);
-    hashLst = hashLst.map(
-      (hash) => `${hash} ${strLst.find((str) => bcrypt.compareSync(str, hash))}`
+    hashList = await Promise.all(
+      hashList.map(async (hash) => {
+        const result = `${hash} ${await bcryptCompare(hash)}`;
+        console.log(`Hash processed: ${result}`);
+        return result;
+      })
     );
-    appendFileSync("./hashes.answers.txt", [hashLst.join("\n"), "\n"].join(""));
+    fs.appendFileSync("./hashes.answers.txt", [hashList.join("\n")].join(""));
     process.exit();
   });
+}
+
+async function bcryptCompare(hash) {
+  for (let str of stringsList) {
+    if (await bcrypt.compare(str, hash)) {
+      return str;
+    }
+  }
+  return "";
 }
