@@ -1,6 +1,6 @@
-const fs = require("fs");
 const cluster = require("cluster");
 const numCPUs = require("os").cpus().length;
+const { readFileSync, appendFileSync, existsSync, unlink } = require("fs");
 const bcrypt = require("bcryptjs");
 
 const ALPHABET =
@@ -16,10 +16,9 @@ function* genCh(len) {
     }
   }
 }
-
-const stringsList = [
+const strLst = [
   "",
-  ...Object.values(JSON.parse(fs.readFileSync("./mcupws.json", "utf8"))),
+  ...Object.values(JSON.parse(readFileSync("./mcupws.json", "utf8"))),
   ...genCh(1),
   ...genCh(2),
   ...genCh(3),
@@ -27,15 +26,26 @@ const stringsList = [
 
 if (cluster.isPrimary) {
   console.time(`${numCPUs} cores sync`);
-  if (fs.existsSync("hashes.answers.txt")) {
-    fs.unlink("hashes.answers.txt", (err) => {
+  if (fs.existsSync("./hashes.answers.txt")) {
+    fs.unlink("./hashes.answers.txt", (err) => {
       if (err) throw err;
-      console.log("Removed old hashes.answers.txt");
     });
-  }
-  const [, , qty] = process.argv.map(Number);
-  const splitQty = qty / numCPUs;
-  let workersCompleted = 0;
+
+    let numHashesProcessed = 0;
+
+    cluster.on("message", (worker, message) => {
+      // Receive the result of a hash processing from a worker
+      const { hash, password } = message;
+      result.push(`${hash} ${password}`);
+
+      numHashesProcessed++;
+      console.log(
+        `Processed hash ${numHashesProcessed} of ${partnerHash.length}`
+      );
+
+      if (numHashesProcessed === partnerHash.length) {
+        console.timeEnd("process");
+        fs.writeFileSync("peer.2K.hashes.answers.txt", result.join("\n"));
 
   for (let i = 0; i < numCPUs; i++) {
     const worker = cluster.fork();
@@ -46,38 +56,25 @@ if (cluster.isPrimary) {
   cluster.on("exit", () => {
     workersCompleted++;
     if (workersCompleted === numCPUs) {
-      console.timeEnd(`${numCPUs} cores sync`); //10 cores sync: 21:44.179 (m:ss.mmm)
-      console.log("All workers completed");
+      // when all workers are done
+      console.timeEnd(`${numCPUs} cores sync`); // 10 cores sync: 15:50.058 (m:ss.mmm) for submittion
       process.exit();
     }
   });
 } else {
   process.on("message", async ({ start, end }) => {
-    let partnerHash = fs
-      .readFileSync("ZhihuiChen.2k.hashes.txt", "utf8")
+    let hashList = fs
+      .readFileSync("./ZhihuiChen.2k.hashes.txt", "utf8")
       .split("\n")
       .slice(start, end);
-    partnerHash = await Promise.all(
-      partnerHash.map(async (hash) => {
+    hashList = await Promise.all(
+      hashList.map(async (hash) => {
         const result = `${hash} ${await bcryptCompare(hash)}`;
         console.log(`Hash processed: ${result}`);
         return result;
       })
     );
-    fs.appendFileSync(
-      "hashes.answers.txt",
-      [partnerHash.join("\n")].join("") + "\n"
-    );
-
+    fs.appendFileSync("./hashes.answers.txt", [hashList.join("\n")].join(""));
     process.exit();
   });
-}
-
-async function bcryptCompare(hash) {
-  for (let str of stringsList) {
-    if (await bcrypt.compare(str, hash)) {
-      return str;
-    }
-  }
-  return "";
 }
