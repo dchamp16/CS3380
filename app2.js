@@ -44,7 +44,7 @@ if (isMainThread) {
     worker.on("exit", () => {
       workersCompleted++;
       if (workersCompleted === numCPUs) {
-        console.timeEnd(`${numCPUs} cores sync`); //10 cores sync: 21:38.322 (m:ss.mmm)
+        console.timeEnd(`${numCPUs} cores sync`); //10 cores sync: 21:22.853 (m:ss.mmm)
         console.log("All workers completed");
         process.exit();
       }
