@@ -50,7 +50,7 @@ if (cluster.isPrimary) {
   });
 } else {
   process.on("message", ({ start, end }) => {
-    let hashLst = readFileSync("hashtest.txt", "utf8")
+    let hashLst = readFileSync("./PeterRamos.2K.hashes.txt", "utf8")
       .split("\n")
       .slice(start, end);
     hashLst = hashLst.map(
