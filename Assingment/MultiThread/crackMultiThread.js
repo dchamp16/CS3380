@@ -1,6 +1,7 @@
-const { Worker, isMainThread, parentPort } = require("worker_threads");
 const fs = require("fs");
-const bcrypt = require("bcrypt");
+const { Worker, isMainThread } = require("worker_threads");
+const numCPUs = require("os").cpus().length;
+const bcrypt = require("bcryptjs");
 
 const ALPHABET =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -25,56 +26,51 @@ const stringsList = [
 ];
 
 if (isMainThread) {
-  console.time("hashes processed");
-  const partnerHash = fs
-    .readFileSync("ZhihuiChen.2k.hashes.txt", "utf8")
-    .split("\n");
-  const qty = partnerHash.length;
-  const numCPUs = require("os").cpus().length;
-  const step = Math.ceil(qty / numCPUs);
-
+  console.time(`${numCPUs} cores sync`);
   if (fs.existsSync("hashes.answers.txt")) {
     fs.unlinkSync("hashes.answers.txt");
     console.log("Removed old hashes.answers.txt");
   }
-
+  const [, , qty] = process.argv.map(Number);
+  const splitQty = qty / numCPUs;
   let workersCompleted = 0;
 
   for (let i = 0; i < numCPUs; i++) {
-    const worker = new Worker(__filename);
-    worker.postMessage({
-      id: i,
-      start: i * step,
-      end: i * step + step,
-      partnerHash,
+    const start = i * splitQty;
+    const end = i * splitQty + splitQty;
+    const worker = new Worker(__filename, {
+      workerData: { start, end },
     });
-    worker.on("message", (msg) => {
-      if (msg.type === "done") {
-        workersCompleted++;
-        if (workersCompleted === numCPUs) {
-          console.timeEnd("hashes processed"); //hashes processed: 29:45.736 (m:ss.mmm)
-          console.log("All workers completed");
-        }
+    worker.on("exit", () => {
+      workersCompleted++;
+      if (workersCompleted === numCPUs) {
+        console.timeEnd(`${numCPUs} cores sync`); //10 cores sync: 21:22.853 (m:ss.mmm)
+        console.log("All workers completed");
+        process.exit();
       }
     });
   }
 } else {
-  parentPort.on("message", async ({ id, start, end, partnerHash }) => {
-    console.log(`Worker ${id} processing hashes ${start}-${end}`);
-    const processedHashes = [];
+  const { start, end } = require("worker_threads").workerData;
+  (async () => {
+    let partnerHash = fs
+      .readFileSync("ZhihuiChen.2k.hashes.txt", "utf8")
+      .split("\n")
+      .slice(start, end);
+    partnerHash = await Promise.all(
+      partnerHash.map(async (hash) => {
+        const result = `${hash} ${await bcryptCompare(hash)}`;
+        console.log(`Hash processed: ${result}`);
+        return result;
+      })
+    );
+    fs.appendFileSync(
+      "hashes.answers.txt",
+      [partnerHash.join("\n")].join("") + "\n"
+    );
 
-    for (let i = start; i < end; i++) {
-      const hash = partnerHash[i];
-      const result = await bcryptCompare(hash);
-      const processedHash = `${hash} ${result}`;
-      console.log(`Hash processed: ${processedHash}`);
-      processedHashes.push(processedHash);
-    }
-
-    fs.appendFileSync("hashes.answers.txt", processedHashes.join("\n") + "\n");
-    parentPort.postMessage({ type: "done" });
     process.exit();
-  });
+  })();
 }
 
 async function bcryptCompare(hash) {
