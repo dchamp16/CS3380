@@ -29,23 +29,34 @@ client.on("interactionCreate", async (interaction) => {
         let paragraphCount = interaction.options.data[0]["value"];
         const text = await getLorem(paragraphCount);
         interaction.reply({ content: text });
-        console.log("lorem() initiate");
+        console.log("lorem initiate");
         break;
       case "covid":
         let covidCountry = interaction.options.data[0]["value"];
         let covidState = interaction.options.data[1]["value"];
         let covidStat = await getCovidData(covidCountry, covidState);
         interaction.reply({ content: covidStat });
-        console.log("covid() initiate");
+        console.log("covid initiate");
         break;
       case "dad_joke":
         let jokes = await getDadJoke();
         interaction.reply({ content: `${jokes[0]["joke"]} :joy:` });
+        console.log("dad_joke initiated");
+        break;
+      case "die":
+        let secret = interaction.options.data[0]["value"];
+        if (secret === "jramos") {
+          interaction.reply({ content: `:face_holding_back_tears:` });
+          client.destroy();
+        } else {
+          interaction.reply({ content: `:stuck_out_tongue_closed_eyes:` });
+        }
+        console.log("die initiate");
         break;
       case "help":
-        const helpText = `/lorem <count of lines> - Gets lorem ipsum paragraph\n/virus <country> <state> - Gets virus
+        // still need to add more
+        const helpText = `/lorem <count of lines> - Gets lorem ipsum paragraph\n/covid <country> <state> - Gets virus\n/dad_joke gives you a dads jokes\n/die <secret word> logouts the bot but you need the secret word
       `;
-
         interaction.reply({ content: helpText });
         break;
       default:
@@ -125,9 +136,16 @@ async function main() {
       description: "are you bored? lets watch",
     },
     {
-      //TODO
       name: "die",
       description: "please no!! pleaseee!!",
+      options: [
+        {
+          name: "secret_word",
+          description: "you hate? catch me you can!!",
+          type: 3,
+          required: true,
+        },
+      ],
     },
   ];
   try {
