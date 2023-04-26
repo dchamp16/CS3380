@@ -24,6 +24,7 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
     switch (interaction.commandName) {
       case "lorem":
+        console.log(interaction.options.data[0]["value"]);
         const text = await getLorem();
         interaction.reply({ content: text });
         break;
@@ -45,6 +46,14 @@ async function main() {
     {
       name: "lorem",
       description: "Get a lorem ipsum",
+      options: [
+        {
+          name: "line_count",
+          description: "Number of lines",
+          type: 4,
+          required: true,
+        },
+      ],
     },
     {
       name: "help",
