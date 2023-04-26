@@ -36,8 +36,6 @@ client.on("interactionCreate", async (interaction) => {
       default:
         console.log("hello");
     }
-
-    console.log(`getLorem() executed ${interaction.commandName}`);
   }
 });
 

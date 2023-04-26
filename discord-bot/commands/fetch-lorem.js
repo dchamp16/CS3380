@@ -3,8 +3,8 @@ import fetch from "node-fetch";
 config();
 
 // need a NINJA_API_KEY in .env
-export async function getLorem() {
-  let paragraphs = "2";
+export async function getLorem(count) {
+  let paragraphs = 2;
   try {
     const response = await fetch(
       "https://api.api-ninjas.com/v1/loremipsum?paragraphs=" + paragraphs,
