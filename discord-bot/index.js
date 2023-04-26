@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { REST } from "@discordjs/rest";
 import { getLorem } from "./commands/fetch-lorem.js";
 import { getCovidData } from "./commands/fetch-covid.js";
+import { getDadJoke } from "./commands/fetch-dad-joke.js";
 
 // turn on dotenv
 config();
@@ -36,6 +37,10 @@ client.on("interactionCreate", async (interaction) => {
         let covidStat = await getCovidData(covidCountry, covidState);
         interaction.reply({ content: covidStat });
         console.log("covid() initiate");
+        break;
+      case "dad_joke":
+        let jokes = await getDadJoke();
+        interaction.reply({ content: `${jokes[0]["joke"]} :joy:` });
         break;
       case "help":
         const helpText = `/lorem <count of lines> - Gets lorem ipsum paragraph\n/virus <country> <state> - Gets virus
@@ -86,7 +91,6 @@ async function main() {
       ],
     },
     {
-      //TODO
       name: "dad_joke",
       description: "There is no too funny than dads jokes",
     },
