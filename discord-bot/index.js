@@ -22,22 +22,32 @@ client.on("ready", () => console.log(`${client.user.tag} has log in `));
 
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
-    const text = await getLorem();
-    interaction.reply({ content: text });
+    switch (interaction.commandName) {
+      case "lorem":
+        const text = await getLorem();
+        interaction.reply({ content: text });
+        break;
+      case "help":
+        const helpText = `/lorem - Gets lorem ipsum paragraph\n/virus - Gets virus
+          `;
+        interaction.reply({ content: helpText });
+        break;
+      default:
+        console.log("hello");
+    }
+
     console.log(`getLorem() executed ${interaction.commandName}`);
-    let name = interaction;
-    console.log(name);
   }
 });
 
 async function main() {
   const commands = [
     {
-      name: "order",
-      description: "Order soemthing...",
+      name: "lorem",
+      description: "Get a lorem ipsum",
     },
     {
-      name: "tutorialhelp2",
+      name: "help",
       description: "Help Tutorial",
     },
     {
