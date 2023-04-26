@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, Routes } from "discord.js";
 import { config } from "dotenv";
 import { REST } from "@discordjs/rest";
 import { getLorem } from "./commands/fetch-lorem.js";
+import { getCovidData } from "./commands/fetch-covid.js";
 
 // turn on dotenv
 config();
@@ -24,13 +25,22 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
     switch (interaction.commandName) {
       case "lorem":
-        console.log(interaction.options.data[0]["value"]);
-        const text = await getLorem();
+        let paragraphCount = interaction.options.data[0]["value"];
+        const text = await getLorem(paragraphCount);
         interaction.reply({ content: text });
+        console.log("lorem() initiate");
+        break;
+      case "covid":
+        let covidCountry = interaction.options.data[0]["value"];
+        let covidState = interaction.options.data[1]["value"];
+        let covidStat = await getCovidData(covidCountry, covidState);
+        interaction.reply({ content: covidStat });
+        console.log("covid() initiate");
         break;
       case "help":
-        const helpText = `/lorem - Gets lorem ipsum paragraph\n/virus - Gets virus
-          `;
+        const helpText = `/lorem <count of lines> - Gets lorem ipsum paragraph\n/virus <country> <state> - Gets virus
+      `;
+
         interaction.reply({ content: helpText });
         break;
       default:
@@ -58,8 +68,22 @@ async function main() {
       description: "Help Tutorial",
     },
     {
-      name: "tutorialhelp3",
-      description: "Help Tutorial",
+      name: "covid",
+      description: "Number of new cases country and county",
+      options: [
+        {
+          name: "country",
+          description: "Name of the county",
+          type: 3,
+          required: true,
+        },
+        {
+          name: "state",
+          description: "Name of the state",
+          type: 3,
+          required: true,
+        },
+      ],
     },
   ];
   try {

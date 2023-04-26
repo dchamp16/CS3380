@@ -4,10 +4,9 @@ config();
 
 // need a NINJA_API_KEY in .env
 export async function getLorem(count) {
-  let paragraphs = 2;
   try {
     const response = await fetch(
-      "https://api.api-ninjas.com/v1/loremipsum?paragraphs=" + paragraphs,
+      "https://api.api-ninjas.com/v1/loremipsum?paragraphs=" + count,
       {
         headers: {
           "X-Api-Key": process.env.NINJA_API_KEY,
@@ -24,3 +23,5 @@ export async function getLorem(count) {
     console.error("Request failed:", error);
   }
 }
+
+// getLorem(4).then((data) => console.log(data));
