@@ -1,3 +1,8 @@
 import { getLorem } from "./fetch-lorem.js";
 
-getLorem().then((data) => console.log(data));
+let lorem = getLorem().then((data) => {
+  let string = JSON.parse(data);
+  return string["text"];
+});
+
+console.log(lorem.then((data) => data));

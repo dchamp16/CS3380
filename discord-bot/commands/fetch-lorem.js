@@ -18,10 +18,9 @@ export async function getLorem() {
       console.error("Error:", response.status, response.statusText);
     } else {
       const body = await response.text();
-      return body;
+      return JSON.parse(body)["text"];
     }
   } catch (error) {
     console.error("Request failed:", error);
   }
 }
-// getLorem().then((data) => console.log(data));
