@@ -53,7 +53,7 @@ async function main() {
   const commands = [
     {
       name: "lorem",
-      description: "Get a lorem ipsum",
+      description: "filler paragraph lets gooo",
       options: [
         {
           name: "line_count",
@@ -84,6 +84,46 @@ async function main() {
           required: true,
         },
       ],
+    },
+    {
+      //TODO
+      name: "dad_joke",
+      description: "There is no too funny than dads jokes",
+    },
+    {
+      //TODO
+      name: "currency_converter",
+      description: "money talks",
+    },
+    {
+      //TODO
+      name: "ip_lookup",
+      description: "lets geekout lets check an ip address",
+    },
+    {
+      //TODO
+      name: "dictionary",
+      description: "let me look up a word for you",
+    },
+    {
+      //TODO
+      name: "weather",
+      description: "rain or shine im here for you",
+    },
+    {
+      //TODO
+      name: "air_quality",
+      description: "i cant breathh!!",
+    },
+    {
+      //TODO
+      name: "youtube",
+      description: "are you bored? lets watch",
+    },
+    {
+      //TODO
+      name: "die",
+      description: "please no!! pleaseee!!",
     },
   ];
   try {
