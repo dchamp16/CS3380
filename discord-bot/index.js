@@ -10,6 +10,7 @@ import { getConvertCurrency } from "./commands/fetch-currency-converter.js";
 import { getIpLookUp } from "./commands/fetch-ip-lookup.js";
 import { getWeather } from "./commands/fetch-weather.js";
 import { getTimezone } from "./commands/fetch-timezone.js";
+import { getHelp } from "./commands/help.js";
 
 // turn on dotenv
 config();
@@ -110,9 +111,7 @@ client.on("interactionCreate", async (interaction) => {
         break;
       case "help":
         // still need to add more
-        const helpText = `/lorem <COUNT OF LINES> - Gets lorem ipsum paragraph\n/covid <COUNTRY> <STATE> - Gets covid cases\n/dad_joke Gives you a dads jokes\n/die <SECRET WORD> Logouts the bot but you need the secret word\n/dictionary <WORD> Gives the definition of the word\n/currency_converter <FROM CURRENCY><TO CURRENCY><AMOUNT> Convert your money\n/ip_lookup <IP ADDRESS> Gives the location and IPS\n/weather <city> Gets the tempreture, humidity, sunrise and sunset
-      `;
-        interaction.reply({ content: helpText });
+        interaction.reply({ content: getHelp() });
         break;
       default:
         console.log("hello");
