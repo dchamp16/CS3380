@@ -18,11 +18,13 @@ export async function getCovidData(country, state) {
     } else {
       const body = await response.text();
       let newestCase = JSON.parse(body);
-      let values = Object.values(newestCase[0]["cases"]);
-      const lastvalue = values[values.length - 1];
-      return lastvalue;
+      newestCase.forEach((data) => console.log(data));
+      // return `Country: ${country} / State: ${state} total: ${newestCase[1]} New Case: ${newestCase[1]}`;
     }
   } catch (error) {
     console.error("Request failed:", error);
   }
 }
+
+let covidStat = await getCovidData("usa", "utah");
+console.log(covidStat);

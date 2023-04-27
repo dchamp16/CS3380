@@ -11,13 +11,10 @@ import { getIpLookUp } from "./commands/fetch-ip-lookup.js";
 import { getWeather } from "./commands/fetch-weather.js";
 import { getTimezone } from "./commands/fetch-timezone.js";
 import { getHelp } from "./commands/help.js";
+import { getOpenAi } from "./commands/fetch-openAi.js";
 
 // turn on dotenv
 config();
-const now = new Date();
-const hour = now.getHours();
-const minute = now.getMinutes();
-const second = now.getSeconds();
 const BOTTOKEN = process.env.BOT_TOKEN; // gets the bot token
 const CLIENTID = process.env.CLIENT_ID;
 
@@ -35,14 +32,11 @@ client.on("ready", () => console.log(`${client.user.tag} LOGIN `));
 
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
-    const now = new Date();
-    const hour = now.getHours();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
     switch (interaction.commandName) {
       case "lorem":
         let paragraphCount = interaction.options.data[0]["value"];
         const text = await getLorem(paragraphCount);
+        console.log(text);
         interaction.reply({ content: text });
         console.log("lorem initiate");
         break;
@@ -50,7 +44,11 @@ client.on("interactionCreate", async (interaction) => {
         let covidCountry = interaction.options.data[0]["value"];
         let covidState = interaction.options.data[1]["value"];
         let covidStat = await getCovidData(covidCountry, covidState);
-        interaction.reply({ content: covidStat });
+        let covidCases = `Total cases: ${covidStat[
+          "total"
+        ].toString()} | New case: ${covidStat["new"].toString()}`;
+
+        interaction.reply({ content: covidCases });
         console.log("covid initiate");
         break;
       case "dad_joke":
@@ -108,6 +106,11 @@ client.on("interactionCreate", async (interaction) => {
         const cityTimezone = await getTimezone(cityT);
         const cityTimeInfo = `${cityT}: ${cityTimezone["timezone"]} ${cityTimezone["datetime"]} ${cityTimezone["day_of_week"]}`;
         interaction.reply({ content: cityTimeInfo });
+        break;
+      case "question":
+        let question = interaction.options.data[0]["value"];
+        let answer = await getOpenAi(question);
+        interaction.reply({ content: answer });
         break;
       case "help":
         // still need to add more
@@ -233,9 +236,16 @@ async function main() {
       ],
     },
     {
-      //TODO
-      name: "youtube",
-      description: "Are you bored? lets watch",
+      name: "question",
+      description: "Are you bored? ask me a question",
+      options: [
+        {
+          name: "input",
+          description: "Ask a question, ill give you the answer",
+          type: 3,
+          required: true,
+        },
+      ],
     },
     {
       name: "die",
