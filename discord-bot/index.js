@@ -9,6 +9,7 @@ import { getDictionary } from "./commands/fetch-dictionary.js";
 import { getConvertCurrency } from "./commands/fetch-currency-converter.js";
 import { getIpLookUp } from "./commands/fetch-ip-lookup.js";
 import { getWeather } from "./commands/fetch-weather.js";
+import { getTimezone } from "./commands/fetch-timezone.js";
 
 // turn on dotenv
 config();
@@ -93,13 +94,19 @@ client.on("interactionCreate", async (interaction) => {
         console.log(`ip_lookup initialize`);
         break;
       case "weather":
-        let city = interaction.options.data[0]["value"];
-        const citiesWeather = await getWeather(city);
-        const sunrise = new Date(citiesWeather["sunrise"] * 1000);
-        const sunset = new Date(citiesWeather["sunset"] * 1000);
-        const cityCondition = `${city}: ${citiesWeather["temp"]} Celsius\nHumidity: ${citiesWeather["humidity"]}%\nSunrise: ${sunrise}\nSunset: ${sunset}`;
+        let cityW = interaction.options.data[0]["value"];
+        const cityWeather = await getWeather(cityW);
+        const sunrise = new Date(cityWeather["sunrise"] * 1000);
+        const sunset = new Date(cityWeather["sunset"] * 1000);
+        const cityCondition = `${city}: ${cityWeather["temp"]} Celsius\nHumidity: ${cityWeather["humidity"]}%\nSunrise: ${sunrise}\nSunset: ${sunset}`;
         interaction.reply({ content: cityCondition });
         console.log(`weather initialize`);
+        break;
+      case "timezone":
+        let cityT = interaction.options.data[0]["value"];
+        const cityTimezone = await getTimezone(cityT);
+        const cityTimeInfo = `${cityT}: ${cityTimezone["timezone"]} ${cityTimezone["datetime"]} ${cityTimezone["day_of_week"]}`;
+        interaction.reply({ content: cityTimeInfo });
         break;
       case "help":
         // still need to add more
@@ -118,7 +125,7 @@ async function main() {
   const commands = [
     {
       name: "lorem",
-      description: "filler paragraph lets gooo",
+      description: "Filler paragraph lets gooo",
       options: [
         {
           name: "line_count",
@@ -172,7 +179,7 @@ async function main() {
         },
         {
           name: "amount",
-          description: "how much you are exchanging",
+          description: "How much you are exchanging",
           type: 3,
           required: true,
         },
@@ -180,7 +187,7 @@ async function main() {
     },
     {
       name: "ip_lookup",
-      description: "lets geekout lets check an ip address",
+      description: "Lets geekout lets check an ip address",
       options: [
         {
           name: "ip",
@@ -192,11 +199,11 @@ async function main() {
     },
     {
       name: "dictionary",
-      description: "let me look up a word for you",
+      description: "Let me look up a word for you",
       options: [
         {
           name: "define",
-          description: "give me a word",
+          description: "Give me a word",
           type: 3,
           required: true,
         },
@@ -204,11 +211,23 @@ async function main() {
     },
     {
       name: "weather",
-      description: "rain or shine im here for you",
+      description: "Rain or Shine im here for you",
       options: [
         {
           name: "city",
-          description: "get the cities weather",
+          description: "Get the cities weather",
+          type: 3,
+          required: true,
+        },
+      ],
+    },
+    {
+      name: "timezone",
+      description: "What time is it there?",
+      options: [
+        {
+          name: "city",
+          description: "Get the cities timezone",
           type: 3,
           required: true,
         },
@@ -216,21 +235,16 @@ async function main() {
     },
     {
       //TODO
-      name: "air_quality",
-      description: "i cant breathh!!",
-    },
-    {
-      //TODO
       name: "youtube",
-      description: "are you bored? lets watch",
+      description: "Are you bored? lets watch",
     },
     {
       name: "die",
-      description: "please no!! pleaseee!!",
+      description: "Please no!! pleaseee!!",
       options: [
         {
           name: "secret_word",
-          description: "you hate? catch me you can!!",
+          description: "You hate? catch me you can!!",
           type: 3,
           required: true,
         },
