@@ -47,7 +47,7 @@ client.on("interactionCreate", async (interaction) => {
         let covidCases = `Total cases: ${covidStat[
           "total"
         ].toString()} | New case: ${covidStat["new"].toString()}`;
-
+        console.log(covidCases);
         interaction.reply({ content: covidCases });
         console.log("covid initiate");
         break;
@@ -82,6 +82,7 @@ client.on("interactionCreate", async (interaction) => {
           amount
         );
         let change = `${changeApi["old_currency"]}: ${changeApi["old_amount"]} = ${changeApi["new_currency"]}: ${changeApi["new_amount"]}`;
+        console.log(change);
         interaction.reply({ content: change });
         console.log(`currency_converter initialize`);
         break;
@@ -89,15 +90,19 @@ client.on("interactionCreate", async (interaction) => {
         let ipAdd = interaction.options.data[0]["value"];
         const ipStat = await getIpLookUp(ipAdd);
         const locate = `IP located | Provider (${ipStat["isp"]}) ${ipStat["country"]} ${ipStat["region"]} ${ipStat["city"]}`;
+        console.log(locate);
         interaction.reply({ content: locate });
         console.log(`ip_lookup initialize`);
         break;
       case "weather":
         let cityW = interaction.options.data[0]["value"];
+        console.log(cityW);
         const cityWeather = await getWeather(cityW);
+        console.log(cityWeather);
         const sunrise = new Date(cityWeather["sunrise"] * 1000);
         const sunset = new Date(cityWeather["sunset"] * 1000);
-        const cityCondition = `${city}: ${cityWeather["temp"]} Celsius\nHumidity: ${cityWeather["humidity"]}%\nSunrise: ${sunrise}\nSunset: ${sunset}`;
+        const cityCondition = `${cityW}: ${cityWeather["temp"]} Celsius\nHumidity: ${cityWeather["humidity"]}%\nSunrise: ${sunrise}\nSunset: ${sunset}`;
+        console.log(cityCondition);
         interaction.reply({ content: cityCondition });
         console.log(`weather initialize`);
         break;

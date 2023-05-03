@@ -1,0 +1,5 @@
+100k hashes
+    - use bcrypt.js
+    - async await / promise
+    - why is ipc slow? worker.send('hey buddy').process.send('whats up boss')
+    
